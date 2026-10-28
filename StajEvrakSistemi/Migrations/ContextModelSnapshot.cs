@@ -15,7 +15,7 @@ namespace StajEvrakSistemi.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "8.0.33");
+            modelBuilder.HasAnnotation("ProductVersion", "10.0.14");
 
             modelBuilder.Entity("StajEvrakSistemi.Models.Admin", b =>
                 {
@@ -51,7 +51,7 @@ namespace StajEvrakSistemi.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Admins");
+                    b.ToTable("Admins", (string)null);
                 });
 
             modelBuilder.Entity("StajEvrakSistemi.Models.Student", b =>
@@ -88,7 +88,7 @@ namespace StajEvrakSistemi.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Students");
+                    b.ToTable("Students", (string)null);
                 });
 
             modelBuilder.Entity("StajEvrakSistemi.Models.StudentRecord", b =>
@@ -139,7 +139,7 @@ namespace StajEvrakSistemi.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("StudentRecords");
+                    b.ToTable("StudentRecords", (string)null);
                 });
 #pragma warning restore 612, 618
         }
