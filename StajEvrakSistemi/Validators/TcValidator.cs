@@ -7,32 +7,30 @@ public class TcValidator : BaseValidator
     {
         IsForeign = isForeign;
     }
-    public override bool Validate(string input, out string errorMessage)
+    public override ValidationResult Validate(string input)
     {
-        errorMessage = string.Empty;
-
         // 11 hane ve rakam kontrolü
-        if(string.IsNullOrWhiteSpace(input) || input.Length != 11 || !long.TryParse(input, out _))
+        if(string.IsNullOrWhiteSpace(input) || input.Length != 11 || !input.All(char.IsDigit))
         {
-            errorMessage = "TC Kimlik Numarası 11 haneli ve sadece rakamlardan oluşmalıdır.";
-            return false;
+            return ValidationResult.Failure("TC Kimlik Numarası 11 haneli ve sadece rakamlardan oluşmalıdır.");
+            
         }
         // yabancı uyruklu öğrenci kontrolü
         if(IsForeign)
         {
             if(!input.StartsWith("99"))
             {
-                errorMessage = "Yabancı uyruklu öğrenci kimlik numarası 99 ile başlamalıdır.";
-                return false;
+                return ValidationResult.Failure("Yabancı uyruklu öğrenci kimlik numarası 99 ile başlamalıdır.");
+                
             }
-            return true;
+            return ValidationResult.Success();
         }
         // TC vatandaşı ise ilk hane 0 olamaz kontrolü
         if(input.StartsWith("0"))
         {
-            errorMessage = "TC Kimlik Numarası 0 ile başlayamaz.";
-            return false;
+            return ValidationResult.Failure("TC Kimlik Numarası 0 ile başlayamaz.");
+            
         }
-        return true;
+        return ValidationResult.Success();
     }
 }

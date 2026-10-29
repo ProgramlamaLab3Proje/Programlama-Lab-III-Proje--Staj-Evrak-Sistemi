@@ -4,16 +4,14 @@ namespace StajEvrakSistemi.Validators;
 
 public class PhoneValidator : BaseValidator
 {
-    private const string pattern = @"^\+90\s?[0-9]{3}\s?[0-9]{3}\s?[0-9]{2}\s?[0-9]{2}$";
-    public override bool Validate(string input, out string errorMessage)
+    private const string Pattern = @"^\+90\s?[0-9]{3}\s?[0-9]{3}\s?[0-9]{2}\s?[0-9]{2}$";
+    public override ValidationResult Validate(string input)
     {
-        errorMessage = string.Empty;
-        
-        if(string.IsNullOrWhiteSpace(input) || !Regex.IsMatch(input.Trim(), pattern))
+        if(string.IsNullOrWhiteSpace(input) || !Regex.IsMatch(input.Trim(), Pattern))
         {
-            errorMessage = "Telefon numarası +90 xxx xxx xx xx formatında olmalıdır.";
-            return false;
+            return ValidationResult.Failure("Telefon numarası +90 xxx xxx xx xx formatında olmalıdır.");
+           
         }
-        return true;
+        return ValidationResult.Success();
     }
 }
