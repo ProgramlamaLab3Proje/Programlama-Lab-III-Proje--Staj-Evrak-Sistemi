@@ -7,3 +7,6 @@
 .idea/
 .env
 *.db
+# Uploaded student documents
+StajEvrakSistemi/UploadedDocuments/
+.DS_Store

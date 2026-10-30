@@ -1,0 +1,44 @@
+
+@page
+@model StajEvrakSistemi.Pages.Student.UploadModel
+
+@{
+    ViewData["Title"] = "Ek-16 Belge Yükleme";
+}
+
+<div class="container mt-5">
+    <h2>Ek-16 Belge Yükleme</h2>
+
+    <p>Staj başvurunuz için Ek-16 belgenizi yükleyiniz.</p>
+
+    <form method="post" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label asp-for="UploadedFile" class="form-label">
+                Ek-16 Belgesi
+            </label>
+
+            <input asp-for="UploadedFile"
+                   type="file"
+                   class="form-control"
+                   accept=".doc,.docx,.pdf,.jpg,.jpeg,.png" />
+
+            <span asp-validation-for="UploadedFile"
+                  class="text-danger"></span>
+
+            <small class="form-text text-muted">
+                İzin verilen formatlar: DOC, DOCX, PDF, JPG, JPEG, PNG.
+            </small>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            Belgeyi Yükle
+        </button>
+    </form>
+
+    @if (!string.IsNullOrEmpty(Model.Message))
+    {
+        <div class="alert alert-info mt-3">
+            @Model.Message
+        </div>
+    }
+</div>
