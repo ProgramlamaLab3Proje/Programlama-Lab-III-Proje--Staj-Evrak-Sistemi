@@ -13,13 +13,21 @@ public class InternshipCalendarService
     {
         var result = new CalendarCalculationResult();
 
+        // Tarih sıralaması kontrolü
+        if (endDate.Date < startDate.Date)
+        {
+            result.Is30DayRuleValid = false;
+            result.ErrorMessages.Add("Staj bitiş tarihi, başlangıç tarihinden önce olamaz!");
+            return result;
+        }
+
         // 30 Gün Önce Teslim Kontrolü
         var daysDifference = (startDate.Date - submissionDate.Date).TotalDays;
         if (daysDifference < 30)
         {
             result.Is30DayRuleValid = false;
             result.SuggestedStartDate = submissionDate.Date.AddDays(30);
-            result.ErrorMessages.Add($"Staj evrakı başlangıçtan en az 30 gün önce teslim edilmelidir. Önerilen başlangıç tarihi: {result.SuggestedStartDate:dd.MM.yyyy}");
+            result.ErrorMessages.Add("Staj evrakı başlangıçtan en az 30 gün önce teslim edilmelidir.");
         }
         else
         {
