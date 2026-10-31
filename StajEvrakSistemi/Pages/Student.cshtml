@@ -1,0 +1,124 @@
+﻿@page
+@model StajEvrakSistemi.Pages.StudentModel
+@{
+    ViewData["Title"] = "Öğrenci Staj Paneli";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <!-- Sol taraf: Staj tarih ve gün seçimi formu -->
+        <div class="col-lg-7">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Staj Başvuru ve Gün Seçim Formu</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+
+                        <!-- Tarih seçimleri -->
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label for="startDate" class="form-label fw-bold">Staj Başlangıç Tarihi</label>
+                                <input type="date" class="form-control" id="startDate" name="StartDate" required />
+                            </div>
+                            <div class="col-md-6">
+                                <label for="endDate" class="form-label fw-bold">Staj Bitiş Tarihi</label>
+                                <input type="date" class="form-control" id="endDate" name="EndDate" required />
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="submissionDate" class="form-label fw-bold">Evrak Teslim Tarihi</label>
+                            <input type="date" class="form-control" id="submissionDate" name="SubmissionDate" required />
+                            <small class="text-muted d-block mt-1">Belge, staj başlangıcından en az 30 gün önce teslim edilmelidir.</small>
+                        </div>
+
+                        <!-- Haftalık gün seçimi -->
+                        <div class="mb-4">
+                            <label class="form-label d-block fw-bold">Haftalık Staj Yapılacak Günler</label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="pzt" name="SelectedDays" value="Monday" checked>
+                                <label class="form-check-label" for="pzt">Pazartesi</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="sal" name="SelectedDays" value="Tuesday" checked>
+                                <label class="form-check-label" for="sal">Salı</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="car" name="SelectedDays" value="Wednesday" checked>
+                                <label class="form-check-label" for="car">Çarşamba</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="per" name="SelectedDays" value="Thursday" checked>
+                                <label class="form-check-label" for="per">Perşembe</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="cum" name="SelectedDays" value="Friday" checked>
+                                <label class="form-check-label" for="cum">Cuma</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="cmt" name="SelectedDays" value="Saturday">
+                                <label class="form-check-label" for="cmt">Cumartesi</label>
+                            </div>
+                        </div>
+
+                        <hr />
+
+                        <!-- Evrak yükleme alanı -->
+                        <div class="mb-3">
+                            <label for="documentFile" class="form-label fw-bold">Ek-16 Staj Belgesi Yükle</label>
+                            <input type="file" class="form-control" id="documentFile" name="DocumentFile" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg" />
+                            <small class="text-muted">Kabul edilen formatlar: Word (.doc/.docx), PDF, JPEG, PNG</small>
+                        </div>
+
+                        <!-- Google Form URL alanı -->
+                        <div class="mb-3">
+                            <label for="googleFormUrl" class="form-label fw-bold">Staj Teslim Google Form URL'si</label>
+                            <input type="url" class="form-control" id="googleFormUrl" name="GoogleFormUrl" placeholder="https://forms.gle/..." />
+                        </div>
+
+                        <button type="submit" class="btn btn-success w-100 py-2 fw-bold">Başvuruyu Kaydet ve Kontrol Et</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sağ taraf: Canlı doğrulama ve bilgilendirme sonuç kartı -->
+        <div class="col-lg-5">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0 text-primary">Doğrulama &amp; Gün Hesabı Özeti</h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <strong>Bilgilendirme:</strong> Tarihleri ve günleri seçtiğinizde 2026–2027 resmi tatilleri otomatik olarak düşülecektir.
+                    </div>
+
+                    <ul class="list-group list-group-flush mb-3">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Hesaplanan Net İş Günü
+                            <span class="badge bg-primary rounded-pill fs-6">0 Gün</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            30 Gün Kuralı Durumu
+                            <span class="badge bg-secondary">Bekleniyor</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Belge Statüsü
+                            <span class="badge bg-warning text-dark">Henüz Yüklenmedi</span>
+                        </li>
+                    </ul>
+
+                    <div class="card bg-light border-0 p-3">
+                        <small class="text-muted">
+                            <strong>Kural Hatırlatması:</strong><br />
+                            • Evrak staj başlangıcından en az 30 gün önce teslim edilmelidir.<br />
+                            • Resmi ve dini tatiller staj iş gününden sayılmaz.<br />
+                            • Mühendis sayısı &lt; 5 ise bölüm sorgulaması yapılacaktır.
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

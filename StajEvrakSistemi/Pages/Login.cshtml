@@ -1,0 +1,46 @@
+﻿@page
+@model StajEvrakSistemi.Pages.LoginModel
+@{
+    ViewData["Title"] = "Giriş Yap";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white text-center py-3">
+                    <h4 class="mb-0">Staj Evrak Yönetim Sistemi</h4>
+                    <small>Kocaeli Üniversitesi - Yazılım Mühendisliği</small>
+                </div>
+                <div class="card-body p-4">
+
+                    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+                    {
+                        <div class="alert alert-danger" role="alert">
+                            @Model.ErrorMessage
+                        </div>
+                    }
+
+                    <form method="post">
+                        <div class="mb-3">
+                            <label for="email" class="form-label fw-bold">Öğrenci / Yönetici E-Posta</label>
+                            <input type="email" class="form-control" id="email" name="Email" placeholder="ornek@kocaeli.edu.tr" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="password" class="form-label fw-bold">Şifre</label>
+                            <input type="password" class="form-control" id="password" name="Password" placeholder="••••••••" required />
+                        </div>
+
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">Giriş Yap</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer text-center text-muted py-2 bg-light">
+                    <small>5 hatalı denemede hesabınız güvenlik sebebiyle kilitlenecektir.</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
