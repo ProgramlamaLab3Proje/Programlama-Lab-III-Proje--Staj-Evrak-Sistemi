@@ -11,6 +11,7 @@ namespace StajEvrakSistemi.Pages.Student
         // UploadedFile değişkeni öğrencinin yüklediği dosyayı temsil ediyor
 
         public string Message { get; set; } = "";
+        private const long MaxFileSize = 20 * 1024 * 1024; // 20MB
 
         private readonly string[] allowedExtensions =
         {
@@ -26,6 +27,11 @@ namespace StajEvrakSistemi.Pages.Student
             if (UploadedFile == null || UploadedFile.Length == 0) // öğrenci hiç dosya seçmemiş mi veya dosya var içeriği boş mu kontrolü
             {
                 Message = "Lütfen bir dosya seçiniz.";
+                return;
+            }
+            if (UploadedFile.Length > MaxFileSize)
+            {
+                Message = "Dosya boyutu 20 MB sınırını aşamaz.";
                 return;
             }
 
@@ -51,7 +57,7 @@ namespace StajEvrakSistemi.Pages.Student
 
             try
             {
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                using (var fileStream = new FileStream(filePath, FileMode.CreateNew))
                 {
                     await UploadedFile.CopyToAsync(fileStream);
                 }
@@ -61,6 +67,10 @@ namespace StajEvrakSistemi.Pages.Student
             catch (IOException)
             {
                 Message = "Dosya kaydedilirken bir hata oluştu.";
+            }
+            catch (UnauthorizedAccessException)
+            {
+                Message = "Dosya kaydedilemedi. Klasöre erişim izni bulunmuyor.";
             }
         }
     }

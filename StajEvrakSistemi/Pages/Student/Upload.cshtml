@@ -20,7 +20,7 @@
             <input asp-for="UploadedFile"
                    type="file"
                    class="form-control"
-                   accept=".doc,.docx,.pdf,.jpg,.jpeg,.png" />
+                   accept=".doc,.docx,.pdf,.jpg,.jpeg,.png"/>
 
             <span asp-validation-for="UploadedFile"
                   class="text-danger"></span>
@@ -28,6 +28,10 @@
             <small class="form-text text-muted">
                 İzin verilen formatlar: DOC, DOCX, PDF, JPG, JPEG, PNG.
             </small>
+            <div id="clientMessage"
+                class="alert alert-danger mt-3"
+                style="display:none;">
+            </div>
         </div>
 
         <button type="submit" class="btn btn-primary">
@@ -42,3 +46,32 @@
         </div>
     }
 </div>
+<script>
+    const fileInput = document.getElementById("UploadedFile");
+    const uploadForm = document.querySelector("form");
+    const clientMessage = document.getElementById("clientMessage");
+
+    const maxFileSize = 20 * 1024 * 1024;
+
+    function checkFileSize() {
+        const file = fileInput.files[0];
+
+        if (file && file.size > maxFileSize) {
+            clientMessage.textContent =
+                "Dosya boyutu 20 MB sınırını aşamaz.";
+            clientMessage.style.display = "block";
+            return false;
+        }
+
+        clientMessage.style.display = "none";
+        return true;
+    }
+
+    fileInput.addEventListener("change", checkFileSize);
+
+    uploadForm.addEventListener("submit", function (event) {
+        if (!checkFileSize()) {
+            event.preventDefault();
+        }
+    });
+</script>
