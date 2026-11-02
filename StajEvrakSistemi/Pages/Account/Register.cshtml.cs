@@ -4,6 +4,8 @@ using StajEvrakSistemi.Services;
 using StajEvrakSistemi.Data;
 using StajEvrakSistemi.Models;
 using System.ComponentModel.DataAnnotations;
+using StajEvrakSistemi.Validators;
+using Microsoft.VisualBasic;
 
 namespace StajEvrakSistemi.Pages.Account
 {
@@ -39,6 +41,28 @@ namespace StajEvrakSistemi.Pages.Account
 
         public IActionResult OnPost()
         {
+            var emailValidator = new EmailValidator();
+            var emailResult = emailValidator.Validate(Email);
+
+            if (!emailResult.IsValid)
+            {
+                ErrorMessage = emailResult.ErrorMessage;
+                return Page();
+            }   
+
+            string normalizedEmail = Email.Trim().ToLowerInvariant();
+
+            bool emailExists = _context.Students.Any(s =>
+                s.Email.ToLower() == normalizedEmail)
+                || _context.Admins.Any(a =>
+                a.Email.ToLower() == normalizedEmail);
+
+            if (emailExists)
+            {
+                ErrorMessage = "Bu e-posta adresiyle daha önce kayıt oluşturulmuştur.";
+                return Page();
+            }
+
             if (ConfirmPassword != Password)
             {
                 ErrorMessage = "Girdiğiniz şifreler eşleşmiyor. Lütfen 'Şifre' ve 'Şifre (Tekrar)' alanlarına aynı şifreyi girdiğinizden emin olunuz.";
