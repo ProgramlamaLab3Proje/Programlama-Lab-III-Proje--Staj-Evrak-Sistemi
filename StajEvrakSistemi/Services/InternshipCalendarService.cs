@@ -57,7 +57,7 @@ public class InternshipCalendarService
         // Formdaki beyan edilen gün sayısı ile eşit mi?
         if (declaredDaysInForm > 0 && netDays != declaredDaysInForm)
         {
-            result.ErrorMessages.Add($"Hesaplanan staj iş günü ({netDays}) ile formda beyan edilen gün sayısı ({declaredDaysInForm}) uyuşmuyor!");
+            result.ErrorMessages.Add("Hesaplanan staj iş günü ile formda beyan edilen gün sayısı uyuşmuyor.");
         }
 
         return result;
