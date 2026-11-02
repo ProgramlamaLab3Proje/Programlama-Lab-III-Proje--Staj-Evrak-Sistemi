@@ -1,5 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using StajEvrakSistemi.Services;
+using StajEvrakSistemi.Data;
+using StajEvrakSistemi.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace StajEvrakSistemi.Pages.Account
@@ -23,6 +26,12 @@ namespace StajEvrakSistemi.Pages.Account
         public string ConfirmPassword {  get; set; } = string.Empty;
 
         public string? ErrorMessage { get; set; }
+
+        public RegisterModel(PasswordService sifre, Context context)
+        {
+            _passwordService = sifre;
+            _context = context;
+        }
 
         public void OnGet()
         {
@@ -70,10 +79,26 @@ namespace StajEvrakSistemi.Pages.Account
                     if (!hasuppercase || !hassymbol || !haslowercase || !hasdigit)
                     {
                         ErrorMessage = "Şifrenizin büyük - küçük harf, sembol ve rakam içerdiğinden emin olunuz.";
+                        return Page();
                     }
                 }
             }
-            return Page();
+            string passwordHash = _passwordService.HashPassword(Password);
+
+            StajEvrakSistemi.Models.Student newStudent = new StajEvrakSistemi.Models.Student
+            {
+                Name = Name,
+                Surname = Surname,
+                Email = Email,
+                HashedPassword = passwordHash,
+                Role = "ROLE_STUDENT"
+            };
+            _context.Students.Add(newStudent); // (git add gibi)
+            _context.SaveChanges(); // değişiklikleri veritabanına kalıcı olarak kaydeder. (git push gibi)
+            return RedirectToPage("/Account/Login");
         }
+
+        private readonly PasswordService _passwordService;
+        private readonly Context _context;
     }
 }

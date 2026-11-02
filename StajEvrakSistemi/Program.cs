@@ -1,9 +1,12 @@
 using StajEvrakSistemi.Services;
+using StajEvrakSistemi.Data;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+builder.Services.AddDbContext<Context>();
 builder.Services.AddScoped<PasswordService>();
 
 var app = builder.Build();
