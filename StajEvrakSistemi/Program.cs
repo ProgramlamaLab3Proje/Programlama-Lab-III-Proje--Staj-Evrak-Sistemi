@@ -1,7 +1,10 @@
+using StajEvrakSistemi.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+builder.Services.AddScoped<PasswordService>();
 
 var app = builder.Build();
 
