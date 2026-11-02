@@ -1,7 +1,7 @@
 ﻿@page
-@model StajEvrakSistemi.Pages.LoginModel
+@model StajEvrakSistemi.Pages.Account.RegisterModel
 @{
-    ViewData["Title"] = "Giriş Yap";
+    ViewData["Title"] = "Kayıt Ol";
 }
 
 <div class="container mt-5">
@@ -23,6 +23,14 @@
 
                     <form method="post">
                         <div class="mb-3">
+                            <label for="name" class="form-label fw-bold">Ad</label>
+                            <input type="text" class="form-control" id="name" name="Name" required/>
+                        </div>
+                        <div class="mb-3">
+                            <label for="surname" class="form-label fw-bold">Soyad</label>
+                            <input type="text" class="form-control" id="surname" name="Surname" required />
+                        </div>
+                        <div class="mb-3">
                             <label for="email" class="form-label fw-bold">Öğrenci / Yönetici E-Posta</label>
                             <input type="email" class="form-control" id="email" name="Email" placeholder="ornek@kocaeli.edu.tr" required />
                         </div>
@@ -30,15 +38,19 @@
                         <div class="mb-3">
                             <label for="password" class="form-label fw-bold">Şifre</label>
                             <input type="password" class="form-control" id="password" name="Password" placeholder="••••••••" required />
+                            <small class="form-text text-muted">
+                                * Şifreniz en az 8 karakter olmalı, büyük - küçük harf, sembol ve rakam içermelidir.
+                            </small>
+                        </div>
+                        <div class="mb-3">
+                            <label for="confirmpassword" class="form-label fw-bold">Şifre (Tekrar)</label>
+                            <input type="password" class="form-control" id="confirmpassword" name="ConfirmPassword" placeholder="••••••••" required />
                         </div>
 
                         <div class="d-grid gap-2 mt-4">
-                            <button type="submit" class="btn btn-primary btn-lg">Giriş Yap</button>
+                            <button type="submit" class="btn btn-primary btn-lg">Kayıt Ol</button>
                         </div>
                     </form>
-                </div>
-                <div class="card-footer text-center text-muted py-2 bg-light">
-                    <small>5 hatalı denemede hesabınız güvenlik sebebiyle kilitlenecektir.</small>
                 </div>
             </div>
         </div>

@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace StajEvrakSistemi.Pages;
+namespace StajEvrakSistemi.Pages.Account;
 
 public class LoginModel : PageModel
 {
