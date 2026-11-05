@@ -12,7 +12,17 @@ builder.Services.AddDbContext<Context>();
 builder.Services.AddScoped<PasswordService>();
 
 builder.Services.AddAuthentication(Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme)
-.AddCookie();
+.AddCookie(options =>
+{          options.LoginPath = "/Account/Login";
+           options.Events.OnRedirectToAccessDenied = context =>
+           {
+               context.Response.StatusCode = StatusCodes.Status403Forbidden; //!!
+               return Task.CompletedTask;
+           };
+           options.Cookie.HttpOnly = true; // js tarafından okunmasını engeller
+           options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // yalnızca https üzerinden gönderilmesini sağlar
+           options.ExpireTimeSpan = TimeSpan.FromMinutes(30);  // giriş cookiesinin geçerlilik süresini belirler
+});
 
 var app = builder.Build();
 
@@ -32,6 +42,8 @@ app.UseRouting(); // hangi sayfaya gidildiğini belirler
 app.UseAuthentication(); // isteği yapan kullanıcının kim olduğunu belirler
 
 app.UseAuthorization(); // kullanıcının sayfaya erişim yetkisini kontrol eder
+
+app.UseStatusCodePagesWithReExecute("/Account/AccessDenied"); // 403 hatasında açılacak sayfa yolu
 
 app.MapRazorPages();
 
