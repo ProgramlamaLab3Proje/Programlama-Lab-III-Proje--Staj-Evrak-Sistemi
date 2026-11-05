@@ -1,11 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using StajEvrakSistemi.Services;
+using Microsoft.VisualBasic;
 using StajEvrakSistemi.Data;
 using StajEvrakSistemi.Models;
-using System.ComponentModel.DataAnnotations;
+using StajEvrakSistemi.Services;
+using StajEvrakSistemi.Utility;
 using StajEvrakSistemi.Validators;
-using Microsoft.VisualBasic;
+using System.ComponentModel.DataAnnotations;
 
 namespace StajEvrakSistemi.Pages.Account
 {
@@ -115,7 +116,7 @@ namespace StajEvrakSistemi.Pages.Account
                 Surname = Surname,
                 Email = Email,
                 HashedPassword = passwordHash,
-                Role = "ROLE_STUDENT"
+                Role = Utility.StaticRoles.ROLE_STUDENT
             };
             _context.Students.Add(newStudent); // (git add gibi)
             _context.SaveChanges(); // değişiklikleri veritabanına kalıcı olarak kaydeder. (git push gibi)

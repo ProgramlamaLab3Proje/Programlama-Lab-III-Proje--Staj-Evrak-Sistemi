@@ -2,12 +2,17 @@ using StajEvrakSistemi.Services;
 using StajEvrakSistemi.Data;
 using Microsoft.EntityFrameworkCore;
 
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddDbContext<Context>();
 builder.Services.AddScoped<PasswordService>();
+
+builder.Services.AddAuthentication(Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme)
+.AddCookie();
 
 var app = builder.Build();
 
@@ -22,9 +27,11 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
-app.UseRouting();
+app.UseRouting(); // hangi sayfaya gidildiğini belirler
 
-app.UseAuthorization();
+app.UseAuthentication(); // isteği yapan kullanıcının kim olduğunu belirler
+
+app.UseAuthorization(); // kullanıcının sayfaya erişim yetkisini kontrol eder
 
 app.MapRazorPages();
 
