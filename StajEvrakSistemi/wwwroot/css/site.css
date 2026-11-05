@@ -20,3 +20,140 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+/* Hesabım açılır menüsü */
+.account-dropdown {
+    position: relative;
+}
+
+.account-dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    min-width: 150px;
+    background-color: white;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 6px 0;
+    z-index: 1000;
+}
+
+.account-dropdown:hover .account-dropdown-menu {
+    display: block;
+}
+
+.account-dropdown-menu a {
+    display: block;
+    padding: 10px 16px;
+    color: #212529;
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+
+.account-dropdown-menu a:hover {
+    background-color: #f1f3f5;
+}
+
+.dropdown-arrow {
+    margin-left: 4px;
+    font-size: 13px;
+}
+
+.profile-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: #e9ecef;
+    color: #343a40;
+}
+
+/* 
+   ANA SAYFA TASARIMI
+ */
+
+.homepage {
+    max-width: 1120px;
+    padding-top: 25px;
+    padding-bottom: 30px;
+}
+
+/* Karşılama alanı */
+.homepage > section:first-child {
+    background: linear-gradient(135deg, #edf3ff, #f3efff) !important;
+    border: 1px solid #e4e9f7;
+    padding: 65px 35px !important;
+    border-radius: 24px !important;
+}
+
+.homepage h1 {
+    color: #26345a;
+    letter-spacing: -1px;
+}
+
+.homepage .lead {
+    max-width: 750px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.8;
+}
+
+/* Bölüm başlıkları */
+.homepage h2 {
+    color: #293858;
+    margin-bottom: 20px;
+}
+
+.homepage h4 {
+    color: #35466d;
+    font-weight: 600;
+}
+
+/* Genel metin görünümü */
+.homepage p {
+    line-height: 1.8;
+    color: #68748c;
+}
+
+/* Özellik kartları */
+.homepage .card {
+    border: 1px solid #e9edf5 !important;
+    border-radius: 18px;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.homepage .card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 28px rgba(54, 75, 125, 0.12) !important;
+}
+
+.homepage .card-body {
+    padding: 30px !important;
+}
+
+/* Süreç alanı */
+.homepage > section:last-child {
+    background: linear-gradient(135deg, #f1f4fc, #f7f4ff) !important;
+    border: 1px solid #e8ebf5;
+    border-radius: 22px !important;
+}
+
+/* Küçük ekranlar */
+@media (max-width: 768px) {
+    .homepage {
+        padding-left: 18px;
+        padding-right: 18px;
+    }
+
+    .homepage > section:first-child {
+        padding: 40px 20px !important;
+    }
+
+    .homepage h1 {
+        font-size: 2rem;
+    }
+}

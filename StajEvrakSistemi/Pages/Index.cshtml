@@ -1,10 +1,100 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Ana Sayfa";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container mt-5 homepage">
+
+    <section class="bg-light rounded-4 p-5 text-center mb-5">
+        <h1 class="display-5 fw-bold">
+            Staj Başvuru ve Evrak Yönetim Sistemi
+        </h1>
+
+        <p class="lead text-muted mt-3">
+            Öğrenci staj başvurularının ve evrak süreçlerinin
+            dijital ortamda düzenli ve kolay bir şekilde yönetilmesini
+            sağlayan platform.
+        </p>
+    </section>
+
+    <section class="mb-5">
+        <h2 class="fw-bold text-center mb-3">Sistem Hakkında</h2>
+
+        <p class="text-muted text-center mx-auto" style="max-width: 800px;">
+            Staj Evrak Sistemi, öğrencilerin staj başvuru ve belge
+            süreçlerini takip etmelerine, yöneticilerin ise başvuruları
+            inceleyip değerlendirmelerine yardımcı olmak amacıyla
+            geliştirilmiştir.
+        </p>
+    </section>
+
+    <section class="mb-5">
+        <h2 class="fw-bold text-center mb-4">Sistem Özellikleri</h2>
+
+        <div class="row g-4">
+
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body text-center p-4">
+                        <h4 class="mb-3">Evrak Yönetimi</h4>
+                        <p class="text-muted mb-0">
+                            Staj belgelerinin dijital ortamda
+                            yüklenmesi ve değerlendirme sürecinin takibi.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body text-center p-4">
+                        <h4 class="mb-3">Staj Takvimi</h4>
+                        <p class="text-muted mb-0">
+                            Staj tarihleri ve çalışma günlerinin
+                            planlanmasına yardımcı olan takvim sistemi.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body text-center p-4">
+                        <h4 class="mb-3">Başvuru Takibi</h4>
+                        <p class="text-muted mb-0">
+                            Öğrenci başvurularının ve evrak
+                            değerlendirme durumlarının takip edilmesi.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="bg-light rounded-4 p-4 p-md-5 mb-5">
+        <h2 class="fw-bold text-center mb-4">Süreç Nasıl İşler?</h2>
+
+        <div class="row g-4 text-center">
+
+            <div class="col-md-6">
+                <h4>Öğrenciler</h4>
+                <p class="text-muted">
+                    Sisteme giriş yaparak staj bilgilerini ve
+                    belgelerini iletebilir, başvuru süreçlerini takip edebilir.
+                </p>
+            </div>
+
+            <div class="col-md-6">
+                <h4>Yöneticiler</h4>
+                <p class="text-muted">
+                    Öğrenci başvurularını inceleyebilir ve
+                    evrak değerlendirme süreçlerini yönetebilir.
+                </p>
+            </div>
+
+        </div>
+    </section>
+
 </div>
