@@ -10,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddDbContext<Context>();
 builder.Services.AddScoped<PasswordService>();
+builder.Services.AddScoped<AdminSeeder>();
 
 builder.Services.AddAuthentication(Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme)
 .AddCookie(options =>
@@ -24,6 +25,12 @@ builder.Services.AddAuthentication(Microsoft.AspNetCore.Authentication.Cookies.C
 });
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope()) // create scope geçici erişim alanı oluşturur
+{
+    var seeder = scope.ServiceProvider.GetRequiredService<AdminSeeder>(); // adminseeder nesnesi alınıyor
+    seeder.Seed(); // seed metodu çağrılır
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
