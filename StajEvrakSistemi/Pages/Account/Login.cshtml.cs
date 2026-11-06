@@ -33,18 +33,13 @@ public class LoginModel : PageModel
 
     public IActionResult OnGet()
     {
-        if (User.Identity?.IsAuthenticated == true) // kullanıcı giriş yapmış mı tanımlı mı kontrol edilir
+        if (User.Identity?.IsAuthenticated == true)
         {
-            // giriş yapan kullanıcı rolüne göre index sayfasına yönlendirilir, login sayfasına girmez sistem
-            if (User.IsInRole(StaticRoles.ROLE_ADMIN))
-                return RedirectToPage("/Admin/Index");
-
-            if (User.IsInRole(StaticRoles.ROLE_STUDENT))
-                return RedirectToPage("/Student/Index");
+            return RedirectToPage("/Index");
         }
-        return Page(); // kullanıcı tanımsızsa login sayfası döndürülür
-    }
 
+        return Page();
+    }
     public async Task<IActionResult> OnPost() //async asenkron çalışmasını sağlar, task ise yönlendirme yapacağını belirtir
     {
         StajEvrakSistemi.Models.Student? student = _context.Students.FirstOrDefault(s => s.Email == Email);
@@ -110,15 +105,7 @@ public class LoginModel : PageModel
             //kimliği cookie ile tarayıcıya kaydeder. (await işlem bitene kadar durmayı, signinasync senkron girişi,
             //parantez içindeki ilk ifade cookie metodudnun seçilmesi, 2. ifade ise kimlik nesnesini belirtir.)
 
-            if (varsayilan.Role == StaticRoles.ROLE_ADMIN)
-            {
-                return RedirectToPage("/Admin/Index");
-            }
-
-            else if (varsayilan.Role == StaticRoles.ROLE_STUDENT)
-            {
-                return RedirectToPage("/Student/Index");
-            }
+            return RedirectToPage("/Index");
         }
 
         return Page();
