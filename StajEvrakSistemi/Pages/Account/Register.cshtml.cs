@@ -36,8 +36,18 @@ namespace StajEvrakSistemi.Pages.Account
             _context = context;
         }
 
-        public void OnGet()
+        public IActionResult OnGet()
         {
+            if (User.Identity?.IsAuthenticated == true) // kullanıcı giriş yapmış mı tanımlı mı kontrol edilir
+            {
+                // giriş yapan kullanıcı rolüne göre index sayfasına yönlendirilir, register sayfasına girmez sistem
+                if (User.IsInRole(StaticRoles.ROLE_ADMIN)) 
+                    return RedirectToPage("/Admin/Index");
+
+                if (User.IsInRole(StaticRoles.ROLE_STUDENT))
+                    return RedirectToPage("/Student/Index");
+            }
+            return Page(); // kullanıcı tanımsızsa register sayfası döndürülür
         }
 
         public IActionResult OnPost()

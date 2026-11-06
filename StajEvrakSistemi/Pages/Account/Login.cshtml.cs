@@ -31,8 +31,18 @@ public class LoginModel : PageModel
         _context = context;
     }
 
-    public void OnGet()
+    public IActionResult OnGet()
     {
+        if (User.Identity?.IsAuthenticated == true) // kullanıcı giriş yapmış mı tanımlı mı kontrol edilir
+        {
+            // giriş yapan kullanıcı rolüne göre index sayfasına yönlendirilir, login sayfasına girmez sistem
+            if (User.IsInRole(StaticRoles.ROLE_ADMIN))
+                return RedirectToPage("/Admin/Index");
+
+            if (User.IsInRole(StaticRoles.ROLE_STUDENT))
+                return RedirectToPage("/Student/Index");
+        }
+        return Page(); // kullanıcı tanımsızsa login sayfası döndürülür
     }
 
     public async Task<IActionResult> OnPost() //async asenkron çalışmasını sağlar, task ise yönlendirme yapacağını belirtir
