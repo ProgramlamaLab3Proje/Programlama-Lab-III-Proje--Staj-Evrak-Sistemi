@@ -10,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddDbContext<Context>();
 builder.Services.AddScoped<PasswordService>();
+builder.Services.AddScoped<AdminSeeder>();
 
 builder.Services.AddAuthentication(Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme)
 .AddCookie(options =>
@@ -21,10 +22,15 @@ builder.Services.AddAuthentication(Microsoft.AspNetCore.Authentication.Cookies.C
            };
            options.Cookie.HttpOnly = true; // js tarafından okunmasını engeller
            options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // yalnızca https üzerinden gönderilmesini sağlar
-           options.ExpireTimeSpan = TimeSpan.FromMinutes(30);  // giriş cookiesinin geçerlilik süresini belirler
 });
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope()) // create scope geçici erişim alanı oluşturur
+{
+    var seeder = scope.ServiceProvider.GetRequiredService<AdminSeeder>(); // adminseeder nesnesi alınıyor
+    seeder.Seed(); // seed metodu çağrılır
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -43,7 +49,7 @@ app.UseAuthentication(); // isteği yapan kullanıcının kim olduğunu belirler
 
 app.UseAuthorization(); // kullanıcının sayfaya erişim yetkisini kontrol eder
 
-app.UseStatusCodePagesWithReExecute("/Account/AccessDenied"); // 403 hatasında açılacak sayfa yolu
+//app.UseStatusCodePagesWithReExecute("/Account/AccessDenied"); // 403 hatasında açılacak sayfa yolu
 
 app.MapRazorPages();
 
