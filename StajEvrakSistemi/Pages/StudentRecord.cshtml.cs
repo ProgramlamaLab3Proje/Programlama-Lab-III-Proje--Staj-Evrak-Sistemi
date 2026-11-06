@@ -5,7 +5,7 @@ using StajEvrakSistemi.Services;
 
 namespace StajEvrakSistemi.Pages;
 
-public class StudentModel : PageModel
+public class StudentRecordModel : PageModel
 {
     private readonly InternshipCalendarService _calendarService = new();
 

@@ -43,7 +43,7 @@ app.UseAuthentication(); // isteği yapan kullanıcının kim olduğunu belirler
 
 app.UseAuthorization(); // kullanıcının sayfaya erişim yetkisini kontrol eder
 
-app.UseStatusCodePagesWithReExecute("/Account/AccessDenied"); // 403 hatasında açılacak sayfa yolu
+//app.UseStatusCodePagesWithReExecute("/Account/AccessDenied"); // 403 hatasında açılacak sayfa yolu
 
 app.MapRazorPages();
 
