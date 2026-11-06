@@ -107,8 +107,7 @@ public class LoginModel : PageModel
 
             return RedirectToPage("/Index");
         }
-
-        return Page();
+        
     }
 
 }
