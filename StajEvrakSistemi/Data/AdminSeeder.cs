@@ -30,6 +30,8 @@ namespace StajEvrakSistemi.Data
                     FailedLogins = 0,
                     IsLocked = false
                 };
+                _context.Admins.Add(admin);
+                _context.SaveChanges();
             }
         }
     }
