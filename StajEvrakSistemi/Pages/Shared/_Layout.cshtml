@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -12,19 +12,41 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">StajEvrakSistemi</a>
+                <a class="navbar-brand" asp-page="/Index">StajEvrakSistemi</a>
+
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-page="/Index">Home</a>
+                            <a class="nav-link text-dark" asp-page="/Index">Ana Sayfa</a>
                         </li>
+
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-page="/Privacy">Privacy</a>
                         </li>
+
+                        @if (User.IsInRole(StajEvrakSistemi.Utility.StaticRoles.ROLE_ADMIN))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-page="/Admin/Applications">Başvuruları Görüntüle</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-page="/Admin/StudentRecords">Öğrenci Kayıtları</a>
+                            </li>
+                        }
+                        else if (User.IsInRole(StajEvrakSistemi.Utility.StaticRoles.ROLE_STUDENT))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-page="/StudentRecord">Staj Başvur</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-page="/Student/Applications">Başvurularımı Görüntüle</a>
+                            </li>
+                        }
                     </ul>
 
                     <ul class="navbar-nav">
@@ -43,6 +65,7 @@
                                         </svg>
                                     </span>
                                 </button>
+
                                 <div class="dropdown-menu dropdown-menu-end">
                                     <form method="post" asp-page="/Account/Logout">
                                         <button type="submit" class="dropdown-item">Çıkış Yap</button>
@@ -69,6 +92,7 @@
             </div>
         </nav>
     </header>
+
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
