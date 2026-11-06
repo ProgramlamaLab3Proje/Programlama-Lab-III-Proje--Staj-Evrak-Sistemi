@@ -91,7 +91,12 @@ public class LoginModel : PageModel
             var principal = new ClaimsPrincipal(identity);
             //asp.net coreda bu kimliği temsilleyen nesnedir
 
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme , principal); 
+            await HttpContext.SignInAsync (CookieAuthenticationDefaults.AuthenticationScheme, principal,
+                new AuthenticationProperties
+                {
+                    IsPersistent = false //cookienin kalıcı olmamasını sağlar
+                }
+            );
             //kimliği cookie ile tarayıcıya kaydeder. (await işlem bitene kadar durmayı, signinasync senkron girişi,
             //parantez içindeki ilk ifade cookie metodudnun seçilmesi, 2. ifade ise kimlik nesnesini belirtir.)
 

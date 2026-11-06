@@ -21,7 +21,6 @@ builder.Services.AddAuthentication(Microsoft.AspNetCore.Authentication.Cookies.C
            };
            options.Cookie.HttpOnly = true; // js tarafından okunmasını engeller
            options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // yalnızca https üzerinden gönderilmesini sağlar
-           options.ExpireTimeSpan = TimeSpan.FromMinutes(30);  // giriş cookiesinin geçerlilik süresini belirler
 });
 
 var app = builder.Build();
