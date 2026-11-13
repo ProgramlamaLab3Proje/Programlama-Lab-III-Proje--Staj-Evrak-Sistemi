@@ -5,31 +5,144 @@
 }
 
 <div class="container mt-4">
-    <div class="row">
-        <!-- Sol taraf: Staj tarih ve gün seçimi formu -->
-        <div class="col-lg-7">
-            <div class="card shadow-sm mb-4">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">Staj Başvuru ve Gün Seçim Formu</h5>
+    <form method="post" enctype="multipart/form-data" id="internship_form">
+
+        <!-- Öğrenci bilgileri -->
+        <div class="card shadow-sm mb-4" id="student_info_section">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Öğrenci Bilgileri</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <!-- Ad & Soyad -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Ad</label>
+                        <input type="text" class="form-control student-required" asp-for="StudentRecord.Name" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Soyad</label>
+                        <input type="text" class="form-control student-required" asp-for="StudentRecord.Surname" />
+                    </div>
+
+                    <!-- Öğrenci No & TC / Yabancı Kimlik No -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Öğrenci No</label>
+                        <input type="text" class="form-control student-required" asp-for="StudentRecord.StudentNumber" maxlength="15" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">T.C. / Yabancı Kimlik No</label>
+                        <input type="text" class="form-control student-required" asp-for="StudentRecord.NationalId" maxlength="11" />
+                    </div>
+
+                    <!-- Uyruk ve Doğum Tarihi -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Uyruk</label>
+                        <select class="form-select" asp-for="StudentRecord.Nationality">
+                            <option value="T.C.">T.C.</option>
+                            <option value="Yabancı">Yabancı</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Doğum Tarihi</label>
+                        <input type="text" id="birth_date" class="form-control student-required" name="StudentRecord.BirthDate"
+                               value="" placeholder="gg.aa.yyyy" maxlength="10" autocomplete="off" />
+                    </div>
+
+                    <!-- Bölüm ve Staj Gün Sayısı -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Bölüm</label>
+                        <input type="text" class="form-control student-required" asp-for="StudentRecord.Department" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Daha Önce Yapılan Staj Gün Sayısı</label>
+                        <input type="text" class="form-control" asp-for="StudentRecord.PreviousInternshipDays"
+                               inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" value="0" />
+                    </div>
+
+                    <!-- E-posta ve Telefon -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">E-posta</label>
+                        <input type="email" class="form-control student-required" asp-for="StudentRecord.Email" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Telefon Numarası</label>
+                        <input type="tel" id="phone_input" class="form-control student-required" asp-for="StudentRecord.PhoneNumber"
+                               placeholder="+90 5xx xxx xx xx" maxlength="17" autocomplete="off" />
+                    </div>
+
+                    <!-- Sağlık Yardımı Statüsü -->
+                    <div class="col-md-12">
+                        <label class="form-label fw-bold">Sağlık Yardımı Statüsü (SGK)</label>
+                        <select class="form-select student-required" asp-for="StudentRecord.HealthAssistanceStatus">
+                            <option value="" selected disabled>Lütfen seçiniz...</option>
+                            <option value="Ailesinden Sağlık Yardımı Alıyor">Ailem üzerinden sağlık yardımı (SGK) alıyorum</option>
+                            <option value="Sağlık Yardımı Almıyor">Sağlık yardımı (SGK) almıyorum</option>
+                        </select>
+                    </div>
+
+                    <!-- İkametgah adresi -->
+                    <div class="col-12 mt-4">
+                       <div class="p-3 bg-light border rounded-3">
+                          <h6 class="fw-bold text-primary border-bottom border-primary-subtle pb-2 mb-3">İkametgâh Adresi</h6>
+                          <div class="row g-3">
+                             <div class="col-md-4">
+                                <label class="form-label">Mahalle</label>
+                                <input type="text" id="addr_mahalle" class="form-control student-required" />
+                             </div>
+                          <div class="col-md-5">
+                                <label class="form-label">Cadde / Sokak</label>
+                                <input type="text" id="addr_cadde_sokak" class="form-control student-required" />
+                          </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Bina No</label>
+                                <input type="text" id="addr_bina" class="form-control student-required" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
+                          </div>
+                          <div class="col-md-4">
+                                <label class="form-label">Daire No</label>
+                                <input type="text" id="addr_daire" class="form-control student-required" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
+                          </div>
+                          <div class="col-md-4">
+                                <label class="form-label">İlçe</label>
+                                <input type="text" id="addr_ilce" class="form-control student-required" />
+                          </div>
+                          <div class="col-md-4">
+                                <label class="form-label">İl</label>
+                                <input type="text" id="addr_il" class="form-control student-required" />
+                          </div>
+
+                    <input type="hidden" asp-for="StudentRecord.Address" id="hidden_full_address" />
                 </div>
-                <div class="card-body">
-                    <form method="post" enctype="multipart/form-data">
+            </div>
+        </div>
+
+        <!-- Takvim / Belge (sol), Doğrulama özeti (sağ) -->
+        <div class="row" id="calculation_section">
+            <!-- Sol taraf: Staj takvim ve belge yükleme formu -->
+            <div class="col-lg-7">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Staj Başvuru ve Gün Seçim Formu</h5>
+                    </div>
+                    <div class="card-body">
 
                         <!-- Tarih seçimleri -->
                         <div class="row g-3 mb-3">
                             <div class="col-md-6">
-                                <label for="startDate" class="form-label fw-bold">Staj Başlangıç Tarihi</label>
-                                <input type="date" asp-for="StartDate" class="form-control" required />
+                                <label for="start_date" class="form-label fw-bold">Staj Başlangıç Tarihi</label>
+                                <input type="text" id="start_date" asp-for="StartDate" asp-format="{0:dd.MM.yyyy}"
+                                       class="form-control" placeholder="gg.aa.yyyy" maxlength="10" autocomplete="off" required />
                             </div>
                             <div class="col-md-6">
-                                <label for="endDate" class="form-label fw-bold">Staj Bitiş Tarihi</label>
-                                <input type="date" asp-for="EndDate" class="form-control" required />
+                                <label for="end_date" class="form-label fw-bold">Staj Bitiş Tarihi</label>
+                                <input type="text" id="end_date" asp-for="EndDate" asp-format="{0:dd.MM.yyyy}"
+                                       class="form-control" placeholder="gg.aa.yyyy" maxlength="10" autocomplete="off" required />
                             </div>
                         </div>
 
                         <div class="mb-3">
-                            <label for="submissionDate" class="form-label fw-bold">Evrak Teslim Tarihi</label>
-                            <input type="date" asp-for="SubmissionDate" class="form-control" required />
+                            <label for="submission_date" class="form-label fw-bold">Evrak Teslim Tarihi</label>
+                            <input type="text" id="submission_date" asp-for="SubmissionDate" asp-format="{0:dd.MM.yyyy}"
+                                   class="form-control" placeholder="gg.aa.yyyy" maxlength="10" autocomplete="off" required />
                             <small class="text-muted d-block mt-1">Belge, staj başlangıcından en az 30 gün önce teslim edilmelidir.</small>
                         </div>
 
@@ -66,9 +179,20 @@
 
                         <!-- Evrak yükleme alanı -->
                         <div class="mb-3">
-                            <label for="documentFile" class="form-label fw-bold">Ek-16 Staj Belgesi Yükle</label>
-                            <input type="file" class="form-control" id="documentFile" name="DocumentFile" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg" />
-                            <small class="text-muted">Kabul edilen formatlar: Word (.doc/.docx), PDF, JPEG, PNG</small>
+                            <label for="UploadedFile" class="form-label fw-bold">Ek-16 Staj Belgesi Yükle</label>
+                            <input type="file" class="form-control student-required" id="UploadedFile" asp-for="UploadedFile" accept=".doc,.docx,.pdf,.jpg,.jpeg,.png" /> 
+                            <small class="text-muted d-block mt-1">Kabul edilen formatlar: Word (.doc/.docx), PDF, JPEG, PNG</small>
+                            
+                            <!-- Belge seçildiği anda otomatik çalışan denetim mesajı -->
+                            <div id="clientMessage" class="alert mt-2 py-2 mb-0" style="display:none;"></div>
+
+                            <!-- Sunucudan dönen yükleme mesajı -->
+                            @if (!string.IsNullOrEmpty(Model.UploadMessage))
+                            {
+                                <div class="alert @(Model.IsUploadSuccess ? "alert-success" : "alert-danger") mt-2 py-2 mb-0">
+                                    @Model.UploadMessage
+                                </div>
+                            }
                         </div>
 
                         <!-- Google Form URL alanı -->
@@ -78,106 +202,344 @@
                         </div>
 
                         <div class="d-flex gap-2">
-                            <button type="submit" class="btn btn-outline-primary w-50 py-2 fw-bold">
+                            <button type="submit" id="btn_calculate" name="actionType" value="calculate" class="btn btn-outline-primary w-50 py-2 fw-bold cancel">
                                 Günleri Hesapla
                             </button>
-                            <button type="button" class="btn btn-success w-50 py-2 fw-bold">
+                            <button type="submit" id="btn_save" name="actionType" value="save" class="btn btn-success w-50 py-2 fw-bold">
                                 Başvuruyu Kaydet
                             </button>
                         </div>
-                    </form>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Sağ taraf: Canlı doğrulama ve bilgilendirme sonuç kartı -->
-        <div class="col-lg-5">
-            <div class="card shadow-sm mb-4">
-                <div class="card-header bg-light">
-                    <h5 class="mb-0 text-primary">Doğrulama &amp; Gün Hesabı Özeti</h5>
-                </div>
-                <div class="card-body">
-                    @if (Model.CalculationResult != null)
-                    {
-                        <!-- Hesaplama yapıldıysa gösterilecek alan -->
-                        @if (!Model.CalculationResult.Is30DayRuleValid)
+            <!-- Sağ taraf: Canlı doğrulama ve bilgilendirme sonuç kartı -->
+            <div class="col-lg-5">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0 text-primary">Doğrulama &amp; Gün Hesabı Özeti</h5>
+                    </div>
+                    <div class="card-body">
+                        @if (Model.CalculationResult != null)
                         {
-                            <div class="alert alert-danger mb-3">
-                                @if (Model.CalculationResult.SuggestedStartDate.HasValue)
-                                {
-                                    <strong>30 Gün Kuralı İhlali!</strong><br />
-                                }
-                                else
-                                {
-                                    <strong>Tarih Hatası!</strong><br />
-                                }
-                                
-                                @foreach (var error in Model.CalculationResult.ErrorMessages)
-                                {
-                                    <span>@error</span><br />
-                                }
+                            <!-- Hesaplama yapıldıysa gösterilecek alan -->
+                            @if (!Model.CalculationResult.Is30DayRuleValid)
+                            {
+                                <div class="alert alert-danger mb-3">
+                                    @if (Model.CalculationResult.SuggestedStartDate.HasValue)
+                                    {
+                                        <strong>30 Gün Kuralı İhlali!</strong><br />
+                                    }
+                                    else
+                                    {
+                                        <strong>Tarih Hatası!</strong><br />
+                                    }
 
-                                @if (Model.CalculationResult.SuggestedStartDate.HasValue)
-                                {
-                                    <span><strong>Önerilen En Erken Staj Başlangıç Tarihi:</strong> @Model.CalculationResult.SuggestedStartDate.Value.ToString("dd.MM.yyyy")</span>
-                                }
-                            </div>
+                                    @foreach (var error in Model.CalculationResult.ErrorMessages)
+                                    {
+                                        <span>@error</span><br />
+                                    }
+
+                                    @if (Model.CalculationResult.SuggestedStartDate.HasValue)
+                                    {
+                                        <span><strong>Önerilen En Erken Staj Başlangıç Tarihi:</strong> @Model.CalculationResult.SuggestedStartDate.Value.ToString("dd.MM.yyyy")</span>
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="alert alert-success mb-3">
+                                    <strong>Tarihler Uygun!</strong> 30 gün önceden teslim kuralı sağlandı.
+                                </div>
+                            }
+
+                            <ul class="list-group list-group-flush mb-3">
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Hesaplanan Net İş Günü
+                                    @if (Model.CalculationResult.ErrorMessages.Any(e => e.Contains("önce olamaz")))
+                                    {
+                                        <span class="badge bg-secondary">Hesaplanamadı</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-primary rounded-pill fs-5">@Model.CalculationResult.CalculatedWorkDays Gün</span>
+                                    }
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    30 Gün Kuralı Durumu
+                                    @if (Model.CalculationResult.ErrorMessages.Any(e => e.Contains("önce olamaz")))
+                                    {
+                                        <span class="badge bg-secondary">Tarih Hatası</span>
+                                    }
+                                    else if (Model.CalculationResult.Is30DayRuleValid)
+                                    {
+                                        <span class="badge bg-success">Geçerli</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">Geçersiz</span>
+                                    }
+                                </li>
+                            </ul>
                         }
                         else
                         {
-                            <div class="alert alert-success mb-3">
-                                <strong>Tarihler Uygun!</strong> 30 gün önceden teslim kuralı sağlandı.
+                            <div class="alert alert-info">
+                                <strong>Bilgilendirme:</strong> Tarihleri ve günleri seçtiğinizde 2026–2027 resmi tatilleri otomatik olarak düşülecektir.
                             </div>
                         }
 
-                        <ul class="list-group list-group-flush mb-3">
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                Hesaplanan Net İş Günü
-                                @if (Model.CalculationResult.ErrorMessages.Any(e => e.Contains("önce olamaz")))
-                                {
-                                    <span class="badge bg-secondary">Hesaplanamadı</span>
-                                }
-                                else
-                                {
-                                    <span class="badge bg-primary rounded-pill fs-5">@Model.CalculationResult.CalculatedWorkDays Gün</span>
-                                }
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                30 Gün Kuralı Durumu
-                                @if (Model.CalculationResult.ErrorMessages.Any(e => e.Contains("önce olamaz")))
-                                {
-                                    <span class="badge bg-secondary">Tarih Hatası</span>
-                                }
-                                else if (Model.CalculationResult.Is30DayRuleValid)
-                                {
-                                    <span class="badge bg-success">Geçerli</span>
-                                }
-                                else
-                                {
-                                    <span class="badge bg-danger">Geçersiz</span>
-                                }
-                            </li>
-                        </ul>
-                    }
-                    else
-                    {
-                        <div class="alert alert-info">
-                            <strong>Bilgilendirme:</strong> Tarihleri ve günleri seçtiğinizde 2026–2027 resmi tatilleri otomatik olarak düşülecektir.
+                        <div class="card bg-light border-0 p-3">
+                            <small class="text-muted">
+                                <strong>Kural Hatırlatması:</strong><br />
+                                • Evrak staj başlangıcından en az 30 gün önce teslim edilmelidir.<br />
+                                • Resmi ve dini tatiller staj iş gününden sayılmaz.<br />
+                                • Mühendis sayısı &lt; 5 ise bölüm sorgulaması yapılacaktır.
+                            </small>
                         </div>
-                    }
 
-                    <div class="card bg-light border-0 p-3">
-                        <small class="text-muted">
-                            <strong>Kural Hatırlatması:</strong><br />
-                            • Evrak staj başlangıcından en az 30 gün önce teslim edilmelidir.<br />
-                            • Resmi ve dini tatiller staj iş gününden sayılmaz.<br />
-                            • Mühendis sayısı &lt; 5 ise bölüm sorgulaması yapılacaktır.
-                        </small>
                     </div>
-
                 </div>
             </div>
         </div>
-
-    </div>
+    </form>
 </div>
+
+
+@section Scripts {
+    <!-- Flatpickr Kütüphanesi -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://npmcdn.com/flatpickr/dist/l10n/tr.js"></script>
+
+    <script>
+        // Tam "gg.aa.yyyy" (10 karakter) ve gerçek bir takvim günü olup olmadığını kontrol eder
+        function parseStrictTurkishDate(dateStr) {
+            if (!dateStr || !/^\d{2}\.\d{2}\.\d{4}$/.test(dateStr)) return null;
+            const parts = dateStr.split(".");
+            const day = parseInt(parts[0], 10);
+            const month = parseInt(parts[1], 10);
+            const year = parseInt(parts[2], 10);
+
+            if (year < 1900 || year > 2100 || month < 1 || month > 12 || day < 1 || day > 31) {
+                return null;
+            }
+
+            const dateObj = new Date(year, month - 1, day);
+            if (
+                dateObj.getFullYear() !== year ||
+                dateObj.getMonth() !== month - 1 ||
+                dateObj.getDate() !== day
+            ) {
+                return null;
+            }
+            return dateObj;
+        }
+
+        // Hem takvimi gösteren hem de yazarken kendi kendine gün atamasını engelleyen fonksiyon
+        function setupDateField(elementId) {
+            const input = document.getElementById(elementId);
+            if (!input) return;
+
+            let isTyping = false;
+
+            const fp = flatpickr(input, {
+                locale: "tr",
+                dateFormat: "d.m.Y",
+                allowInput: true,
+                disableMobile: true,
+                // Yazım ortasında yarım tarihleri kendi kendine tamamlamasını engeller
+                parseDate: function (datestr) {
+                    const validDate = parseStrictTurkishDate(datestr);
+                    return validDate || undefined;
+                },
+                onOpen: function () {
+                    isTyping = false;
+                }
+            });
+
+            input.addEventListener("keydown", function (e) {
+                isTyping = true;
+                if (e.key === "Enter" && !parseStrictTurkishDate(input.value)) {
+                    e.preventDefault();
+                }
+            });
+
+            // Klavyeden yazarken nokta koyma (yazım ortasında fp.setDate çağırmaz)
+            input.addEventListener("input", function (e) {
+                if (!isTyping) return;
+
+                const cursorStart = e.target.selectionStart || 0;
+                const digitsBeforeCursor = e.target.value.slice(0, cursorStart).replace(/\D/g, "").length;
+
+                let v = e.target.value.replace(/\D/g, "");
+                if (v.length > 8) v = v.slice(0, 8);
+
+                let formatted = "";
+                if (v.length > 0) {
+                    formatted = v.slice(0, 2);
+                    if (v.length > 2) {
+                        formatted += "." + v.slice(2, 4);
+                        if (v.length > 4) {
+                            formatted += "." + v.slice(4, 8);
+                        }
+                    }
+                }
+                e.target.value = formatted;
+
+                let newCursorPos = digitsBeforeCursor;
+                if (digitsBeforeCursor > 2) newCursorPos += 1;
+                if (digitsBeforeCursor > 4) newCursorPos += 1;
+                e.target.setSelectionRange(newCursorPos, newCursorPos);
+            });
+
+            // Sadece kutudan çıkıldığında (blur) geçerli bir tarih varsa takvimi o güne eşitle
+            input.addEventListener("blur", function () {
+                isTyping = false;
+                const validDate = parseStrictTurkishDate(input.value);
+                if (validDate) {
+                    fp.setDate(validDate, false);
+                }
+            });
+        }
+
+        // 4 Tarih Kutusu tanımlandı
+        setupDateField("birth_date");
+        setupDateField("start_date");
+        setupDateField("end_date");
+        setupDateField("submission_date");
+
+        // Telefon numarası maskesi (+90 5xx xxx xx xx)
+        const phoneInput = document.getElementById("phone_input");
+        if (phoneInput) {
+            phoneInput.addEventListener("input", function (e) {
+                let digits = e.target.value.replace(/\D/g, "");
+                if (digits.startsWith("90")) digits = digits.slice(2);
+                if (digits.startsWith("0")) digits = digits.slice(1);
+                if (digits.length > 10) digits = digits.slice(0, 10);
+
+                let formatted = "";
+                if (digits.length > 0) {
+                    formatted = "+90 " + digits.slice(0, 3);
+                    if (digits.length > 3) formatted += " " + digits.slice(3, 6);
+                    if (digits.length > 6) formatted += " " + digits.slice(6, 8);
+                    if (digits.length > 8) formatted += " " + digits.slice(8, 10);
+                }
+                e.target.value = formatted;
+            });
+        }
+        
+        // Ek-16 belge boyutu (20 MB) ve format denetimi (Belge seçildiği anda otomatik çalışır)
+        const fileInput = document.getElementById("UploadedFile");
+        const clientMessage = document.getElementById("clientMessage");
+        const maxFileSize = 20 * 1024 * 1024; // 20 MB
+        const allowedExtensions = [".doc", ".docx", ".pdf", ".jpg", ".jpeg", ".png"];
+
+        function validateUploadedFile() {
+            if (!fileInput || !clientMessage) return true;
+
+            const file = fileInput.files[0];
+            if (!file) {
+                clientMessage.style.display = "none";
+                return true;
+            }
+
+            const fileName = file.name.toLowerCase();
+            const isValidExtension = allowedExtensions.some(ext => fileName.endsWith(ext));
+
+            if (!isValidExtension) {
+                clientMessage.className = "alert alert-danger mt-2 py-2 mb-0";
+                clientMessage.textContent = "Geçersiz dosya formatı. Lütfen DOC, DOCX, PDF, JPG, JPEG veya PNG yükleyiniz.";
+                clientMessage.style.display = "block";
+                fileInput.value = "";
+                return false;
+            }
+
+            if (file.size > maxFileSize) {
+                clientMessage.className = "alert alert-danger mt-2 py-2 mb-0";
+                clientMessage.textContent = "Dosya boyutu 20 MB sınırını aşamaz.";
+                clientMessage.style.display = "block";
+                fileInput.value = "";
+                return false;
+            }
+
+            clientMessage.className = "alert alert-success mt-2 py-2 mb-0";
+            clientMessage.textContent = "Belge formatı ve boyutu uygun.";
+            clientMessage.style.display = "block";
+            return true;
+        }
+
+        if (fileInput) {
+            fileInput.addEventListener("change", validateUploadedFile);
+        }
+
+        // "Günleri Hesapla" butonuna tıklandığında üstteki öğrenci bilgisi kutularının zorunluluğunu devre dışı bırak,
+        // "Başvuruyu Kaydet" butonuna tıklandığında ise tüm öğrenci bilgisi kutularını zorunlu yap
+        const studentRequiredFields = document.querySelectorAll(".student-required");
+        const btnCalculate = document.getElementById("btn_calculate");
+        const btnSave = document.getElementById("btn_save");
+
+        // ASP.NET data-val (unobtrusive validation) özniteliklerini ilk yüklemede yedekle ve kaldır ki
+        // "Günleri Hesapla" butonuna basıldığında sayfayı yukarıdaki kutulara sürüklemesin
+        studentRequiredFields.forEach(field => {
+            if (field.getAttribute("data-val") === "true") {
+                field.dataset.wasVal = "true";
+                field.setAttribute("data-val", "false");
+            }
+        });
+
+        if (btnCalculate) {
+            btnCalculate.addEventListener("click", function () {
+                studentRequiredFields.forEach(field => {
+                    field.removeAttribute("required");
+                    field.setAttribute("data-val", "false");
+                });
+            });
+        }
+
+        if (btnSave) {
+            btnSave.addEventListener("click", function () {
+                studentRequiredFields.forEach(field => {
+                    field.setAttribute("required", "required");
+                    if (field.dataset.wasVal === "true") {
+                        field.setAttribute("data-val", "true");
+                    }
+                });
+            });
+        }
+
+        // 6 Parçalı Adres birleştirme (Mahalle, Cadde/Sokak, Bina No, Daire No, İlçe, İl)
+        const form = document.getElementById("internship_form");
+        if (form) {
+            form.addEventListener("submit", function () {
+                const mahalle = document.getElementById("addr_mahalle")?.value.trim() || "";
+                const caddeSokak = document.getElementById("addr_cadde_sokak")?.value.trim() || "";
+                const bina = document.getElementById("addr_bina")?.value.trim() || "";
+                const daire = document.getElementById("addr_daire")?.value.trim() || "";
+                const ilce = document.getElementById("addr_ilce")?.value.trim() || "";
+                const il = document.getElementById("addr_il")?.value.trim() || "";
+
+                if (mahalle || caddeSokak || bina || daire || ilce || il) {
+                    const fullAddress = `${mahalle}, ${caddeSokak}, No: ${bina}, Daire: ${daire}, ${ilce}, ${il}`;
+                    const hiddenAddr = document.getElementById("hidden_full_address");
+                    if (hiddenAddr) {
+                        hiddenAddr.value = fullAddress;
+                    }
+                }
+            });
+        }
+
+        // Gün hesaplaması yapıldıysa sayfa yenilendiğinde en üste atmak yerine doğrudan hesaplama kartına odakla
+        @if (Model.CalculationResult != null)
+        {
+                <text>
+                    window.addEventListener("DOMContentLoaded", function () {
+                        const calcSection = document.getElementById("calculation_section");
+                        if (calcSection) {
+                            calcSection.scrollIntoView({ behavior: "smooth", block: "start" });
+                        }
+                    });
+                </text>
+        }
+    </script>
+}

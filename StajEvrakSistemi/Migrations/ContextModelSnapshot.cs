@@ -51,7 +51,7 @@ namespace StajEvrakSistemi.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Admins", (string)null);
+                    b.ToTable("Admins");
                 });
 
             modelBuilder.Entity("StajEvrakSistemi.Models.Student", b =>
@@ -88,7 +88,7 @@ namespace StajEvrakSistemi.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Students", (string)null);
+                    b.ToTable("Students");
                 });
 
             modelBuilder.Entity("StajEvrakSistemi.Models.StudentRecord", b =>
@@ -111,10 +111,18 @@ namespace StajEvrakSistemi.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("FaxNumber")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("HealthAssistanceStatus")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -137,9 +145,13 @@ namespace StajEvrakSistemi.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Surname")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id");
 
-                    b.ToTable("StudentRecords", (string)null);
+                    b.ToTable("StudentRecords");
                 });
 #pragma warning restore 612, 618
         }
