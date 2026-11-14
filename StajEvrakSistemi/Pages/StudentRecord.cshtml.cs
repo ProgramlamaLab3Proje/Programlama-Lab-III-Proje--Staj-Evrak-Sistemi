@@ -122,21 +122,28 @@ public class StudentRecordModel : PageModel
             {
                 await UploadedFile.CopyToAsync(fileStream);
             }
-
-            // PDF veya DOCX dosyasındaki metni okur ve sonucu kontrol eder.
+            
+            // PDF veya DOCX dosyasındaki metni okur ve öğrenci alanlarını çıkarır.
             if (extension == ".pdf" || extension == ".docx")
             {
                 string extractedText = DocumentTextExtractor.ExtractText(filePath);
 
-                UploadMessage = string.IsNullOrWhiteSpace(extractedText)
-                    ? "Dosya yüklendi ancak metin okunamadı."
-                    : $"Dosya yüklendi. Okunan metin uzunluğu: {extractedText.Length} karakter.";
+                if (string.IsNullOrWhiteSpace(extractedText))
+                {
+                    UploadMessage = "Dosya yüklendi ancak metin okunamadı.";
+                }
+                else
+                {
+                    _ = DocumentFieldExtractor.ExtractStudentFields(extractedText);
+
+                    UploadMessage = "Dosya yüklendi. Metin okundu ve öğrenci alanları çıkarma işlemi tamamlandı.";
+                }
             }
             else
             {
                 UploadMessage = "Dosya yüklendi. Bu format için metin okuma henüz yapılmıyor.";
             }
-            
+
             IsUploadSuccess = true;
         }
         catch (IOException)
