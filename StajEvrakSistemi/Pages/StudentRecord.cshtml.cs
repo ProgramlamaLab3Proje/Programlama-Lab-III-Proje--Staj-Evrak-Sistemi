@@ -99,6 +99,13 @@ public class StudentRecordModel : PageModel
             return;
         }
 
+        if (!DocumentFormatValidator.IsValid(UploadedFile))
+        {
+            UploadMessage = "Dosyanın gerçek formatı, dosya uzantısıyla eşleşmiyor veya dosya geçersiz.";
+            IsUploadSuccess = false;
+            return;
+        }
+
         string uploadFolder = Path.Combine(
             Directory.GetCurrentDirectory(),
             "UploadedDocuments"
