@@ -7,6 +7,8 @@
 .idea/
 .env
 *.db
+*.db-wal
+*.db-shm
 # Uploaded student documents
 StajEvrakSistemi/UploadedDocuments/
 .DS_Store

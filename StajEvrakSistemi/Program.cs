@@ -21,15 +21,16 @@ builder.Services.AddAuthentication(Microsoft.AspNetCore.Authentication.Cookies.C
                return Task.CompletedTask;
            };
            options.Cookie.HttpOnly = true; // js tarafından okunmasını engeller
-           options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // yalnızca https üzerinden gönderilmesini sağlar
+           options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest; // istek ne türde ise (http/https) o türde oluşturur cookieyi
 });
 
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope()) // create scope geçici erişim alanı oluşturur
 {
-    var seeder = scope.ServiceProvider.GetRequiredService<AdminSeeder>(); // adminseeder nesnesi alınıyor
-    seeder.Seed(); // seed metodu çağrılır
+    var db = scope.ServiceProvider.GetRequiredService<Context>(); // context nesnesi alınıyor
+    db.Database.Migrate(); // veritabanı yoksa oluşturuyor, varsa güncelliyor
+    scope.ServiceProvider.GetRequiredService<AdminSeeder>().Seed(); // adminseeder nesnesi alınıyor ve seed metodu çağrılıyor
 }
 
 // Configure the HTTP request pipeline.
