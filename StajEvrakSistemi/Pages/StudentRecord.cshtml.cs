@@ -38,6 +38,7 @@ public class StudentRecordModel : PageModel
 
     // Hesaplama sonucunu arayüze taşımak için
     public CalendarCalculationResult? CalculationResult { get; set; }
+    public List<DocumentFieldComparison> ComparisonResults { get; set; } = new();
 
     public void OnGet()
     {
@@ -99,6 +100,13 @@ public class StudentRecordModel : PageModel
             return;
         }
 
+        if (!DocumentFormatValidator.IsValid(UploadedFile))
+        {
+            UploadMessage = "Dosyanın gerçek formatı, dosya uzantısıyla eşleşmiyor veya dosya geçersiz.";
+            IsUploadSuccess = false;
+            return;
+        }
+
         string uploadFolder = Path.Combine(
             Directory.GetCurrentDirectory(),
             "UploadedDocuments"
@@ -115,8 +123,34 @@ public class StudentRecordModel : PageModel
             {
                 await UploadedFile.CopyToAsync(fileStream);
             }
+            
+            // PDF veya DOCX dosyasındaki metni okur ve öğrenci alanlarını çıkarır.
+            if (extension == ".pdf" || extension == ".docx")
+            {
+                string extractedText = DocumentTextExtractor.ExtractText(filePath);
 
-            UploadMessage = "Dosyanız ve başvurunuz başarıyla kaydedildi.";
+                if (string.IsNullOrWhiteSpace(extractedText))
+                {
+                    UploadMessage = "Dosya yüklendi ancak metin okunamadı.";
+                }
+                else
+                {
+                    var extractedFields =
+                        DocumentFieldExtractor.ExtractStudentFields(extractedText);
+
+                    ComparisonResults = DocumentComparisonService.Compare(
+                        extractedFields,
+                        StudentRecord
+                    );
+
+                    UploadMessage = "Dosya yüklendi. Metin okundu ve öğrenci alanları çıkarma işlemi tamamlandı.";
+                }
+            }
+            else
+            {
+                UploadMessage = "Dosya yüklendi. Bu format için metin okuma henüz yapılmıyor.";
+            }
+
             IsUploadSuccess = true;
         }
         catch (IOException)
