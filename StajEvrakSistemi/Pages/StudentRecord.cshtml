@@ -220,6 +220,7 @@
                         <h5 class="mb-0 text-primary">Doğrulama &amp; Gün Hesabı Özeti</h5>
                     </div>
                     <div class="card-body">
+                    
                         @if (Model.CalculationResult != null)
                         {
                             <!-- Hesaplama yapıldıysa gösterilecek alan -->
@@ -286,6 +287,43 @@
                         {
                             <div class="alert alert-info">
                                 <strong>Bilgilendirme:</strong> Tarihleri ve günleri seçtiğinizde 2026–2027 resmi tatilleri otomatik olarak düşülecektir.
+                            </div>
+                        }
+
+                        @if (Model.ComparisonResults.Any())
+                        {
+                            <hr />
+
+                            <h6 class="fw-bold text-primary mb-3">
+                                Belge ve Form Karşılaştırma Sonuçları
+                            </h6>
+
+                            <div class="list-group mb-3">
+                                @foreach (var result in Model.ComparisonResults)
+                                {
+                                    <div class="list-group-item">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <strong>@result.FieldName</strong>
+
+                                            @if (result.IsMatch)
+                                            {
+                                                <span class="badge bg-success">Eşleşti</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-danger">Eşleşmedi</span>
+                                            }
+                                        </div>
+
+                                        <small class="text-muted d-block">
+                                            Belgedeki: @result.DocumentValue
+                                        </small>
+
+                                        <small class="text-muted d-block">
+                                            Formdaki: @result.EnteredValue
+                                        </small>
+                                    </div>
+                                }
                             </div>
                         }
 

@@ -38,6 +38,7 @@ public class StudentRecordModel : PageModel
 
     // Hesaplama sonucunu arayüze taşımak için
     public CalendarCalculationResult? CalculationResult { get; set; }
+    public List<DocumentFieldComparison> ComparisonResults { get; set; } = new();
 
     public void OnGet()
     {
@@ -134,7 +135,13 @@ public class StudentRecordModel : PageModel
                 }
                 else
                 {
-                    _ = DocumentFieldExtractor.ExtractStudentFields(extractedText);
+                    var extractedFields =
+                        DocumentFieldExtractor.ExtractStudentFields(extractedText);
+
+                    ComparisonResults = DocumentComparisonService.Compare(
+                        extractedFields,
+                        StudentRecord
+                    );
 
                     UploadMessage = "Dosya yüklendi. Metin okundu ve öğrenci alanları çıkarma işlemi tamamlandı.";
                 }
