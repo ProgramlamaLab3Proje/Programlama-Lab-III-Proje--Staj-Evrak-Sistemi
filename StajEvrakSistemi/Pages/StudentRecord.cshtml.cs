@@ -123,7 +123,20 @@ public class StudentRecordModel : PageModel
                 await UploadedFile.CopyToAsync(fileStream);
             }
 
-            UploadMessage = "Dosyanız ve başvurunuz başarıyla kaydedildi.";
+            // PDF veya DOCX dosyasındaki metni okur ve sonucu kontrol eder.
+            if (extension == ".pdf" || extension == ".docx")
+            {
+                string extractedText = DocumentTextExtractor.ExtractText(filePath);
+
+                UploadMessage = string.IsNullOrWhiteSpace(extractedText)
+                    ? "Dosya yüklendi ancak metin okunamadı."
+                    : $"Dosya yüklendi. Okunan metin uzunluğu: {extractedText.Length} karakter.";
+            }
+            else
+            {
+                UploadMessage = "Dosya yüklendi. Bu format için metin okuma henüz yapılmıyor.";
+            }
+            
             IsUploadSuccess = true;
         }
         catch (IOException)
