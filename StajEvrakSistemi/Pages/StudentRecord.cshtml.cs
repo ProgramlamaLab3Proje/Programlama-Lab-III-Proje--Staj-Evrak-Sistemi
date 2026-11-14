@@ -64,6 +64,14 @@ public class StudentRecordModel : PageModel
 
         return Page();
     }
+
+    // mevcut dosya doğrulama ve kaydetme metodunu çağırıyor
+    public async Task<IActionResult> OnPostSaveAsync()
+    {
+        await ValidateAndSaveEk16Async();
+
+        return Page();
+    }
     private async Task ValidateAndSaveEk16Async()
     {
         if (UploadedFile == null || UploadedFile.Length == 0)
