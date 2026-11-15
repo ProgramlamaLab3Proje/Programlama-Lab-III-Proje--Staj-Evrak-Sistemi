@@ -30,7 +30,8 @@ using (var scope = app.Services.CreateScope()) // create scope geçici erişim a
 {
     var db = scope.ServiceProvider.GetRequiredService<Context>(); // context nesnesi alınıyor
     db.Database.Migrate(); // veritabanı yoksa oluşturuyor, varsa güncelliyor
-    scope.ServiceProvider.GetRequiredService<AdminSeeder>().Seed(); // adminseeder nesnesi alınıyor ve seed metodu çağrılıyor
+    var seeder = scope.ServiceProvider.GetRequiredService<AdminSeeder>(); // adminseeder nesnesi alınıyor
+    seeder.Seed(); // seed metodu çağrılır
 }
 
 // Configure the HTTP request pipeline.

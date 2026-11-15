@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace StajEvrakSistemi.Migrations
 {
     /// <inheritdoc />
-    public partial class stajevraksistemi : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -31,11 +31,14 @@ namespace StajEvrakSistemi.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Students",
+                name: "StudentRecords",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(type: "TEXT", nullable: false),
+                    Surname = table.Column<string>(type: "TEXT", nullable: false),
+                    Email = table.Column<string>(type: "TEXT", nullable: false),
                     StudentNumber = table.Column<string>(type: "TEXT", nullable: false),
                     Department = table.Column<string>(type: "TEXT", nullable: false),
                     Nationality = table.Column<string>(type: "TEXT", nullable: false),
@@ -46,7 +49,19 @@ namespace StajEvrakSistemi.Migrations
                     PreviousInternshipDays = table.Column<int>(type: "INTEGER", nullable: false),
                     FaxNumber = table.Column<string>(type: "TEXT", nullable: true),
                     HealthAssistanceStatus = table.Column<string>(type: "TEXT", nullable: false),
-                    AcademicYearStart = table.Column<int>(type: "INTEGER", nullable: false),
+                    AcademicYearStart = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_StudentRecords", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Students",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
                     Surname = table.Column<string>(type: "TEXT", nullable: false),
                     Email = table.Column<string>(type: "TEXT", nullable: false),
@@ -66,6 +81,9 @@ namespace StajEvrakSistemi.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Admins");
+
+            migrationBuilder.DropTable(
+                name: "StudentRecords");
 
             migrationBuilder.DropTable(
                 name: "Students");
