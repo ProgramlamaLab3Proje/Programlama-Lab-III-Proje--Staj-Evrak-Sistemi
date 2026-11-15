@@ -1,0 +1,503 @@
+' =====================================================
+' Staj Evrak Sistemi - Class diyagramları
+' Kaynak: StajEvrakSistemi projesindeki gerçek C# sınıfları
+' 1) Genel bakış  2) Kullanıcı modeli ve doğrulayıcılar (NYP)
+' 3) Kimlik doğrulama ve veri katmanı  4) Belge işleme ve takvim
+' 5) Başvuru listeleme ve veri seti yükleme sayfaları
+' =====================================================
+
+' -----------------------------------------------------
+' 1) GENEL BAKIŞ: sadece sınıflar ve ilişkiler
+' -----------------------------------------------------
+@startuml class_1_genel_bakis
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+hide members
+hide empty methods
+
+package "Pages" {
+  class LoginModel
+  class RegisterModel
+  class LogoutModel
+  class StudentRecordModel
+  class "Student.ApplicationsModel" as StuApps
+  class "Admin.StudentRecordsModel" as AdmCsv
+}
+
+package "Models" {
+  class User
+  class Student
+  class Admin
+  abstract class StudentInformations
+  class StudentRecord
+  class CSVRecord
+  enum BelgeDurumu
+  class Holiday
+  class CalendarCalculationResult
+}
+
+package "Validators" {
+  abstract class BaseValidator
+  class EmailValidator
+  class PhoneValidator
+  class TcValidator
+  class AddressValidator
+  class ValidationResult
+}
+
+package "Services" {
+  class PasswordService
+  class InternshipCalendarService
+  class HolidayProvider <<static>>
+  class DocumentFormatValidator <<static>>
+  class DocumentTextExtractor <<static>>
+  class DocumentFieldExtractor <<static>>
+  class DocumentComparisonService <<static>>
+  class ExtractedStudentFields
+  class DocumentFieldComparison
+}
+
+package "Data" {
+  class Context
+  class AdminSeeder
+}
+
+Student --|> User
+Admin --|> User
+StudentRecord --|> StudentInformations
+CSVRecord --|> StudentInformations
+Student "1" -- "0..*" StudentRecord
+StudentRecord --> BelgeDurumu
+
+EmailValidator --|> BaseValidator
+PhoneValidator --|> BaseValidator
+TcValidator --|> BaseValidator
+AddressValidator --|> BaseValidator
+BaseValidator ..> ValidationResult
+
+LoginModel --> PasswordService
+LoginModel --> Context
+RegisterModel --> PasswordService
+RegisterModel --> Context
+RegisterModel ..> EmailValidator
+AdminSeeder --> Context
+AdminSeeder --> PasswordService
+
+StudentRecordModel *-- InternshipCalendarService
+StudentRecordModel --> Context
+StudentRecordModel --> StudentRecord
+StudentRecordModel ..> DocumentFormatValidator
+StudentRecordModel ..> DocumentTextExtractor
+StudentRecordModel ..> DocumentFieldExtractor
+StudentRecordModel ..> DocumentComparisonService
+
+InternshipCalendarService ..> HolidayProvider
+InternshipCalendarService ..> CalendarCalculationResult
+HolidayProvider --> Holiday
+DocumentFieldExtractor ..> ExtractedStudentFields
+DocumentComparisonService ..> DocumentFieldComparison
+
+Context --> Student
+Context --> Admin
+Context --> StudentRecord
+Context --> CSVRecord
+
+StuApps --> Context
+StuApps --> StudentRecord
+AdmCsv --> Context
+AdmCsv ..> CSVRecord
+@enduml
+
+
+' -----------------------------------------------------
+' 2) KULLANICI MODELİ VE DOĞRULAYICILAR (NYP prensipleri)
+' -----------------------------------------------------
+@startuml class_2_model_ve_dogrulayicilar
+skinparam classAttributeIconSize 0
+hide empty members
+
+class User {
+  + Id : int
+  + Name : string
+  + Surname : string
+  + Email : string
+  + HashedPassword : string
+  + FailedLogins : int
+  + IsLocked : bool
+  + Role : string
+}
+
+class Student {
+  + Records : List<StudentRecord>
+}
+class Admin
+
+Student --|> User
+Admin --|> User
+
+abstract class StudentInformations {
+  + Id : int
+  + Name : string
+  + Surname : string
+  + Email : string
+  + StudentNumber : string
+  + Department : string
+  + Nationality : string
+  + NationalId : string
+  + BirthDate : DateTime
+  + Address : string
+  + PhoneNumber : string
+  + PreviousInternshipDays : int
+  + FaxNumber : string?
+  + HealthAssistanceStatus : string
+  + AcademicYearStart : int
+}
+
+class StudentRecord {
+  + StudentId : int
+  + Student : Student?
+  + CreatedAt : DateTime
+  + DocumentPath : string?
+  + Status : BelgeDurumu
+}
+
+class CSVRecord
+
+enum BelgeDurumu {
+  Yuklendi
+  Inceleniyor
+  Hatali_Eksik
+  Onaylandi
+  Tamamlandi
+}
+
+StudentRecord --|> StudentInformations
+CSVRecord --|> StudentInformations
+Student "1" -- "0..*" StudentRecord : başvurular >
+StudentRecord --> "1" BelgeDurumu
+
+class StaticRoles {
+  + {static} ROLE_ADMIN : string = "ROLE_ADMIN"
+  + {static} ROLE_STUDENT : string = "ROLE_STUDENT"
+}
+User ..> StaticRoles : Role değeri
+
+abstract class BaseValidator {
+  + {abstract} Validate(input : string) : ValidationResult
+}
+
+class EmailValidator {
+  - {static} pattern : string
+  + Validate(input : string) : ValidationResult
+}
+
+class PhoneValidator {
+  - {static} Pattern : string
+  + Validate(input : string) : ValidationResult
+}
+
+class TcValidator {
+  + IsForeign : bool
+  + TcValidator(isForeign : bool = false)
+  + Validate(input : string) : ValidationResult
+}
+
+class AddressValidator {
+  + Validate(input : string) : ValidationResult
+}
+
+class ValidationResult {
+  + IsValid : bool {readOnly}
+  + ErrorMessage : string {readOnly}
+  + ValidationResult(isValid : bool, errorMessage : string = "")
+  + {static} Success() : ValidationResult
+  + {static} Failure(errorMessage : string) : ValidationResult
+}
+
+EmailValidator --|> BaseValidator
+PhoneValidator --|> BaseValidator
+TcValidator --|> BaseValidator
+AddressValidator --|> BaseValidator
+BaseValidator ..> ValidationResult : <<create>>
+@enduml
+
+
+' -----------------------------------------------------
+' 3) KİMLİK DOĞRULAMA VE VERİ KATMANI
+' -----------------------------------------------------
+@startuml class_3_kimlik_ve_veri
+skinparam classAttributeIconSize 0
+hide empty members
+
+abstract class PageModel <<ASP.NET Core>>
+class DbContext <<EF Core>>
+
+class LoginModel {
+  - _passwordService : PasswordService
+  - _context : Context
+  + Email : string
+  + Password : string
+  + ErrorMessage : string
+  + LoginModel(passwordService : PasswordService, context : Context)
+  + OnGet() : IActionResult
+  + OnPost() : Task<IActionResult>
+}
+
+class RegisterModel {
+  - _passwordService : PasswordService
+  - _context : Context
+  + Name : string
+  + Surname : string
+  + Email : string
+  + Password : string
+  + ConfirmPassword : string
+  + ErrorMessage : string
+  + RegisterModel(sifre : PasswordService, context : Context)
+  + OnGet() : IActionResult
+  + OnPost() : IActionResult
+}
+
+class LogoutModel {
+  + OnPostAsync() : Task<IActionResult>
+}
+
+class PasswordService {
+  + HashPassword(sifre : string) : string
+  + VerifyPassword(sifre : string, passwordHash : string) : bool
+}
+
+class Context {
+  + Students : DbSet<Student>
+  + Admins : DbSet<Admin>
+  + StudentRecords : DbSet<StudentRecord>
+  + CSVRecords : DbSet<CSVRecord>
+  # OnConfiguring(optionsBuilder : DbContextOptionsBuilder) : void
+  # OnModelCreating(modelBuilder : ModelBuilder) : void
+}
+
+class AdminSeeder {
+  - _context : Context
+  - _passwordService : PasswordService
+  + AdminSeeder(context : Context, passwordService : PasswordService)
+  + Seed() : void
+}
+
+class User
+class Student
+class Admin
+class StudentRecord
+class CSVRecord
+class EmailValidator
+
+LoginModel --|> PageModel
+RegisterModel --|> PageModel
+LogoutModel --|> PageModel
+Context --|> DbContext
+Student --|> User
+Admin --|> User
+
+LoginModel --> "1" PasswordService
+LoginModel --> "1" Context
+RegisterModel --> "1" PasswordService
+RegisterModel --> "1" Context
+RegisterModel ..> EmailValidator : <<use>>
+AdminSeeder --> "1" Context
+AdminSeeder --> "1" PasswordService
+
+Context --> "0..*" Student
+Context --> "0..*" Admin
+Context --> "0..*" StudentRecord
+Context --> "0..*" CSVRecord
+Student "1" -- "0..*" StudentRecord
+@enduml
+
+
+' -----------------------------------------------------
+' 4) BELGE İŞLEME VE STAJ TAKVİMİ
+' -----------------------------------------------------
+@startuml class_4_belge_ve_takvim
+skinparam classAttributeIconSize 0
+hide empty members
+
+abstract class PageModel <<ASP.NET Core>>
+
+class StudentRecordModel <<Authorize: ROLE_STUDENT>> {
+  - _context : Context
+  - _calendarService : InternshipCalendarService
+  - _savedFileName : string?
+  - {static} MaxFileSize : long
+  - allowedExtensions : string[]
+  + StartDate : DateTime?
+  + EndDate : DateTime?
+  + SubmissionDate : DateTime?
+  + StudentRecord : StudentRecord
+  + SelectedDays : List<string>
+  + UploadedFile : IFormFile?
+  + UploadMessage : string
+  + IsUploadSuccess : bool
+  + CalculationResult : CalendarCalculationResult?
+  + ComparisonResults : List<DocumentFieldComparison>
+  + StudentRecordModel(context : Context)
+  + OnGet() : void
+  + OnPost() : IActionResult
+  + OnPostSaveAsync() : Task<IActionResult>
+  - ValidateAndSaveEk16Async() : Task
+}
+StudentRecordModel --|> PageModel
+
+abstract class StudentInformations
+
+class StudentRecord {
+  + StudentId : int
+  + CreatedAt : DateTime
+  + DocumentPath : string?
+  + Status : BelgeDurumu
+}
+StudentRecord --|> StudentInformations
+
+class Context
+
+class InternshipCalendarService {
+  + Calculate(startDate, endDate, selectedDays,\n    submissionDate, declaredDaysInForm = 0) : CalendarCalculationResult
+}
+
+class CalendarCalculationResult {
+  + CalculatedWorkDays : int
+  + Is30DayRuleValid : bool
+  + SuggestedStartDate : DateTime?
+  + ErrorMessages : List<string>
+  + IsValid : bool {readOnly}
+}
+
+class HolidayProvider <<static>> {
+  + {static} Holidays2026_2027 : List<Holiday>
+}
+
+class Holiday {
+  + Date : DateTime
+  + Name : string
+  + IsHalfDay : bool
+}
+
+class DocumentFormatValidator <<static>> {
+  + {static} IsValid(file : IFormFile) : bool
+  - {static} HasSignature(stream, signature) : bool
+  - {static} IsValidDocx(stream : Stream) : bool
+}
+
+class DocumentTextExtractor <<static>> {
+  + {static} ExtractText(filePath : string) : string
+  - {static} ExtractPdfText(filePath : string) : string
+  - {static} ExtractDocxText(filePath : string) : string
+}
+
+class DocumentFieldExtractor <<static>> {
+  + {static} ExtractStudentFields(text : string) : ExtractedStudentFields
+  - {static} ExtractBetweenLabels(text, startLabel, endLabel) : string?
+}
+
+class ExtractedStudentFields {
+  + TcKimlikNo : string?
+  + FullName : string?
+  + StudentNumber : string?
+  + BirthDate : string?
+  + AcademicYear : string?
+  + Email : string?
+  + Phone : string?
+  + Address : string?
+}
+
+class DocumentComparisonService <<static>> {
+  + {static} Compare(extracted, entered) : List<DocumentFieldComparison>
+  - {static} CompareText(fieldName, documentValue, enteredValue, normalize) : DocumentFieldComparison
+  - {static} CompareDate(documentValue, enteredValue) : DocumentFieldComparison
+  - {static} NormalizeDigits(value : string) : string
+  - {static} NormalizePhone(value : string) : string
+  - {static} NormalizeAddress(value : string) : string
+}
+
+class DocumentFieldComparison {
+  + FieldName : string
+  + DocumentValue : string
+  + EnteredValue : string
+  + IsMatch : bool
+}
+
+' StudentRecordModel, takvim servisini kendi içinde new() ile oluşturur: kompozisyon
+StudentRecordModel *-- "1" InternshipCalendarService
+StudentRecordModel --> "1" StudentRecord
+StudentRecordModel --> "1" Context
+StudentRecordModel --> "0..1" CalendarCalculationResult
+StudentRecordModel --> "0..*" DocumentFieldComparison
+
+StudentRecordModel ..> DocumentFormatValidator : <<use>>
+StudentRecordModel ..> DocumentTextExtractor : <<use>>
+StudentRecordModel ..> DocumentFieldExtractor : <<use>>
+StudentRecordModel ..> DocumentComparisonService : <<use>>
+
+InternshipCalendarService ..> CalendarCalculationResult : <<create>>
+InternshipCalendarService ..> HolidayProvider : <<use>>
+HolidayProvider --> "0..*" Holiday
+
+DocumentFieldExtractor ..> ExtractedStudentFields : <<create>>
+DocumentComparisonService ..> ExtractedStudentFields : <<use>>
+DocumentComparisonService ..> StudentRecord : <<use>>
+DocumentComparisonService ..> DocumentFieldComparison : <<create>>
+
+' Yerleşim: belge servislerini alt alta toplar, anlamı yoktur
+DocumentFormatValidator -[hidden]down- DocumentTextExtractor
+@enduml
+
+
+' -----------------------------------------------------
+' 5) BAŞVURU LİSTELEME VE VERİ SETİ YÜKLEME SAYFALARI
+' -----------------------------------------------------
+@startuml class_5_basvuru_ve_veri_seti
+skinparam classAttributeIconSize 0
+hide empty members
+
+abstract class PageModel <<ASP.NET Core>>
+
+class "Student.ApplicationsModel" as StuApps <<Authorize: ROLE_STUDENT>> {
+  - _context : Context
+  + Applications : List<StudentRecord>
+  + ApplicationsModel(context : Context)
+  + OnGetAsync() : Task
+  + OnGetDocumentAsync(id : int) : Task<IActionResult>
+}
+
+class "Admin.StudentRecordsModel" as AdmCsv <<Authorize: ROLE_ADMIN>> {
+  - {static} MaxFileSize : long
+  - {static} ColumnCount : int
+  - {static} Tr : CultureInfo
+  - _context : Context
+  + CsvFile : IFormFile?
+  + Message : string?
+  + IsSuccess : bool
+  + Errors : List<string>
+  + StudentRecordsModel(context : Context)
+  + OnGet() : void
+  + OnPostAsync() : Task<IActionResult>
+}
+
+class Context {
+  + StudentRecords : DbSet<StudentRecord>
+  + CSVRecords : DbSet<CSVRecord>
+}
+
+abstract class StudentInformations
+class StudentRecord
+class CSVRecord
+
+StuApps --|> PageModel
+AdmCsv --|> PageModel
+StudentRecord --|> StudentInformations
+CSVRecord --|> StudentInformations
+
+StuApps --> "1" Context
+StuApps --> "0..*" StudentRecord
+AdmCsv --> "1" Context
+AdmCsv ..> CSVRecord : <<create>>
+Context --> "0..*" StudentRecord
+Context --> "0..*" CSVRecord
+@enduml

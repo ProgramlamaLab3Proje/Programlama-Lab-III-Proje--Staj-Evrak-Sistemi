@@ -1,0 +1,98 @@
+' =====================================================
+' Staj Evrak Yönetim Sistemi - Birleşik use-case diyagramı
+' Öğrenci solda, admin sağda, ortak use-case'ler ortada.
+' =====================================================
+
+@startuml staj_use_case_birlesik
+left to right direction
+skinparam packageStyle rectangle
+skinparam usecase {
+  BackgroundColor #EEEDFE
+  BorderColor #534AB7
+}
+
+actor "Öğrenci" as O
+actor "Admin" as A
+actor "OCR API" as OCR <<sistem>>
+actor "Google Form" as GF <<sistem>>
+
+rectangle "Staj Evrak Yönetim Sistemi" {
+
+  ' ---------- Ortak ----------
+  usecase "Sisteme giriş yap" as UC_Giris
+  usecase "Çıkış yap" as UC_Cikis
+  usecase "Hesabı kilitle" as UC_Kilit
+
+  ' ---------- Öğrenci ----------
+  usecase "Ek-16 evrakı yükle" as UC_Yukle
+  usecase "Dosya formatını doğrula" as UC_Format
+  usecase "Belgeyi analiz et (OCR)" as UC_Analiz
+  usecase "Kuralları doğrula" as UC_Kural
+  usecase "Formu otomatik doldur" as UC_Form
+  usecase "Evrak durumunu görüntüle" as UC_Durum
+  usecase "Staj günlerini seç" as UC_Gun
+  usecase "Staj gün sayısını hesapla" as UC_Hesap
+  usecase "Google Form URL'si gir" as UC_URL
+  usecase "URL'yi doğrula" as UC_URLDog
+
+  ' ---------- Admin ----------
+  usecase "Test veri seti yükle" as UC_Veri
+  usecase "Öğrencileri içe aktar" as UC_Aktar
+  usecase "Başvuruları görüntüle" as UC_Liste
+  usecase "Başvuruları filtrele" as UC_Filtre
+  usecase "OCR ve evrak sonuçlarını incele" as UC_OCRInc
+  usecase "Rapor oluştur" as UC_Rapor
+  usecase "Tamamlananları görüntüle" as UC_Tamam
+  usecase "Ek-17 belgesi üret" as UC_Ek17
+  usecase "Başvuruları güncelle / sil" as UC_Guncel
+}
+
+' ---------- Aktör bağlantıları ----------
+' Öğrenci: "aktör -- use-case" yazımı aktörü sola yerleştirir
+O -- UC_Giris
+O -- UC_Cikis
+O -- UC_Yukle
+O -- UC_Durum
+O -- UC_Gun
+O -- UC_URL
+
+' Admin: "use-case -- aktör" yazımı aktörü sağa yerleştirir
+UC_Giris -- A
+UC_Cikis -- A
+UC_Veri -- A
+UC_Liste -- A
+UC_OCRInc -- A
+UC_Tamam -- A
+
+' Dış sistemler
+UC_Analiz -- OCR
+UC_Form -- GF
+
+' ---------- include (her zaman) ----------
+UC_Yukle ..> UC_Format : <<include>>
+UC_Yukle ..> UC_Analiz : <<include>>
+UC_Analiz ..> UC_Kural : <<include>>
+UC_Gun ..> UC_Hesap : <<include>>
+UC_URL ..> UC_URLDog : <<include>>
+UC_Aktar <.. UC_Veri : <<include>>
+
+' ---------- extend (koşullu) ----------
+' Ok yönü her zaman genişletenden ana use-case'e doğrudur.
+UC_Kilit ..> UC_Giris : <<extend>>
+UC_Form ..> UC_Kural : <<extend>>
+UC_Filtre ..> UC_Liste : <<extend>>
+UC_Rapor ..> UC_OCRInc : <<extend>>
+UC_Ek17 ..> UC_Tamam : <<extend>>
+UC_Guncel ..> UC_Tamam : <<extend>>
+
+' ---------- Yerleşim ----------
+' Görünmez bağlantılar: admin tarafını sağa iter, anlamı yoktur.
+UC_Kural -[hidden]-> UC_Filtre
+UC_Kural -[hidden]-> UC_Rapor
+UC_Hesap -[hidden]-> UC_Ek17
+UC_URLDog -[hidden]-> UC_Guncel
+UC_Format -[hidden]-> UC_Kilit
+UC_Kural -[hidden]-> UC_Aktar
+UC_Durum -[hidden]-> UC_Cikis
+
+@enduml
