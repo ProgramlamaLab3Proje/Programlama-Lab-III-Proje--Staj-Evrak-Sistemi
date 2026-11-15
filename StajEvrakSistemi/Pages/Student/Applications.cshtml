@@ -1,9 +1,138 @@
+
 @page
 @model StajEvrakSistemi.Pages.Student.ApplicationsModel
+
 @{
+    // Tarayıcı sekmesinde ve sayfa başlığında gösterilecek adı belirler.
     ViewData["Title"] = "Başvurularımı Görüntüle";
 }
 
+@* Sayfanın içeriğini ortalamak ve düzenlemek için Bootstrap container kullanılır. *@
 <div class="container mt-4">
+
+    @* Sayfanın ana başlığı gösterilir. *@
     <h2>Başvurularımı Görüntüle</h2>
+
+    @* Öğrenciye bu sayfanın amacını açıklayan kısa bir bilgilendirme yazısı gösterilir. *@
+    <p class="text-muted">
+        Staj başvurularınızı ve güncel belge durumlarını buradan takip edebilirsiniz.
+    </p>
+
+    @*
+        Applications.cshtml.cs dosyasından gelen başvuru listesi kontrol edilir.
+        Liste boşsa tablo yerine bilgilendirme mesajı gösterilir.
+    *@
+    @if (Model.Applications.Count == 0)
+    {
+        @* Henüz başvuru oluşturmamış öğrenciye gösterilecek mesaj. *@
+        <div class="alert alert-info mt-3">
+            Henüz kayıtlı bir staj başvurunuz bulunmamaktadır.
+        </div>
+    }
+    else
+    {
+        @*
+            Öğrencinin en yeni başvurudan en eskiye doğru sıralanmış
+            kayıtlarını tablo şeklinde gösterir.
+        *@
+        <div class="table-responsive mt-3">
+
+            @* Başvuru bilgilerinin gösterileceği tablo oluşturulur. *@
+            <table class="table table-bordered table-hover">
+
+                @* Tablonun sütun başlıkları belirlenir. *@
+                <thead class="table-light">
+                    <tr>
+                        <th>Başvuru Tarihi</th>
+                        <th>Öğrenci Numarası</th>
+                        <th>Belge Adı</th>
+                        <th>Başvuru Durumu</th>
+                        <th>Belge İşlemi</th>
+                    </tr>
+                </thead>
+
+                @* Veritabanından gelen her başvuru için ayrı bir satır oluşturulur. *@
+                <tbody>
+                    @foreach (var application in Model.Applications)
+                    {
+                        <tr>
+
+                            @* Başvurunun oluşturulduğu tarih ve saat Türkçe tarih biçiminde gösterilir. *@
+                            <td>
+                                @application.CreatedAt.ToString("dd.MM.yyyy HH:mm")
+                            </td>
+
+                            @* Başvuru kaydında bulunan öğrencinin numarası gösterilir. *@
+                            <td>
+                                @application.StudentNumber
+                            </td>
+
+                            @*
+                                DocumentPath alanında dosyanın kayıtlı adı bulunur.
+                                Path.GetFileName ile yalnızca dosya adı alınır.
+                                Dosya bilgisi yoksa açıklayıcı bir mesaj gösterilir.
+                            *@
+                            <td>
+                                @(string.IsNullOrEmpty(application.DocumentPath)
+                                    ? "Belge bilgisi bulunamadı"
+                                    : System.IO.Path.GetFileName(application.DocumentPath))
+                            </td>
+
+                            @*
+                                BelgeDurumu enum değerine göre uygun Türkçe durum metni
+                                ve Bootstrap etiketi gösterilir.
+                            *@
+                            <td>
+                                @switch (application.Status)
+                                {
+                                    // Belge sisteme yeni yüklendiğinde gösterilir.
+                                    case StajEvrakSistemi.Models.BelgeDurumu.Yuklendi:
+                                        <span class="badge bg-secondary">Yüklendi</span>
+                                        break;
+
+                                    // Belge yönetici tarafından incelenirken gösterilir.
+                                    case StajEvrakSistemi.Models.BelgeDurumu.Inceleniyor:
+                                        <span class="badge bg-info text-dark">İnceleniyor</span>
+                                        break;
+
+                                    // Belgede eksik veya hatalı bilgi bulunduğunda gösterilir.
+                                    case StajEvrakSistemi.Models.BelgeDurumu.Hatali_Eksik:
+                                        <span class="badge bg-danger">Hatalı / Eksik</span>
+                                        break;
+
+                                    // Belge onaylandığında gösterilir.
+                                    case StajEvrakSistemi.Models.BelgeDurumu.Onaylandi:
+                                        <span class="badge bg-primary">Onaylandı</span>
+                                        break;
+
+                                    // Başvuru süreci tamamen bittiğinde gösterilir.
+                                    case StajEvrakSistemi.Models.BelgeDurumu.Tamamlandi:
+                                        <span class="badge bg-success">Tamamlandı</span>
+                                        break;
+                                }
+                            </td>
+
+                            @* Öğrencinin yalnızca kendi belgesini görüntüleyebilmesi için bağlantı oluşturulur. *@
+                            <td>
+                                @if (!string.IsNullOrEmpty(application.DocumentPath))
+                                {
+                                    <a asp-page-handler="Document"
+                                       asp-route-id="@application.Id"
+                                       class="btn btn-outline-primary btn-sm">
+                                        Belgeyi Görüntüle
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span>Belge mevcut değil</span>
+                                }
+                            </td>
+
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+        </div>
+    }
 </div>
