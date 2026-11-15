@@ -21,7 +21,7 @@ builder.Services.AddAuthentication(Microsoft.AspNetCore.Authentication.Cookies.C
                return Task.CompletedTask;
            };
            options.Cookie.HttpOnly = true; // js tarafından okunmasını engeller
-           options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest; // istek ne türde ise (http/https) o türde oluşturur cookieyi
+           options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // yalnızca https üzerinden gönderilmesini sağlar 
 });
 
 var app = builder.Build();
