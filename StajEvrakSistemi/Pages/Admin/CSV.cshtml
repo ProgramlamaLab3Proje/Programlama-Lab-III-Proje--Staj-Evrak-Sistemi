@@ -1,0 +1,20 @@
+@page
+@model StajEvrakSistemi.Pages.Admin.StudentRecordsModel
+@{
+    ViewData["Title"] = "Öğrenci Kayıtları";
+}
+
+<div class="container mt-4">
+    <h2>Öğrenci Verileri</h2>
+
+    <form method="post" enctype="multipart/form-data">
+        <input type="file" asp-for="CsvFile" accept=".csv" class="form-control mb-2" />
+        <p>(CSV türündeki dosyalar kabul edilmektedir.)</p>
+        <button type="submit" class="btn btn-primary">Yükle</button>
+    </form>
+
+    @if (Model.Message != null)
+    {
+        <div class="alert alert-info mt-3">@Model.Message</div>
+    }
+</div>
