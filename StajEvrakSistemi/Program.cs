@@ -1,6 +1,8 @@
 using StajEvrakSistemi.Services;
 using StajEvrakSistemi.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
 
 
 
@@ -44,6 +46,15 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
+// tarihlerin her bilgisayarda aynı şekilde okunması için türkçe kültür
+var trCulture = new CultureInfo("tr-TR");
+app.UseRequestLocalization(new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new RequestCulture(trCulture),
+    SupportedCultures = new[] { trCulture },
+    SupportedUICultures = new[] { trCulture }
+});
 
 app.UseRouting(); // hangi sayfaya gidildiğini belirler
 
