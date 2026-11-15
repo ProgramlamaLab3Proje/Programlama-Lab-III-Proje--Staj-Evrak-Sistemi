@@ -1,13 +1,25 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using StajEvrakSistemi.Data;
 using StajEvrakSistemi.Models;
 using StajEvrakSistemi.Services;
+using StajEvrakSistemi.Utility;
 
 namespace StajEvrakSistemi.Pages;
 
+[Authorize(Roles = StaticRoles.ROLE_STUDENT)]
 public class StudentRecordModel : PageModel
 {
     private readonly InternshipCalendarService _calendarService = new();
+    private readonly Context _context;
+    private string? _savedFileName;
+
+    public StudentRecordModel(Context context)
+    {
+        _context = context;
+    }
 
     [BindProperty]
     public DateTime? StartDate { get; set; }
@@ -69,8 +81,29 @@ public class StudentRecordModel : PageModel
     // mevcut dosya doğrulama ve kaydetme metodunu çağırıyor
     public async Task<IActionResult> OnPostSaveAsync()
     {
-        await ValidateAndSaveEk16Async();
+        // formdaki bilgiler eksik veya hatalıysa kaydetmeden geri döner
+        if (!ModelState.IsValid)
+        {
+            UploadMessage = "Lütfen öğrenci bilgilerini eksiksiz ve doğru formatta doldurduğunuzdan emin olunuz.";
+            IsUploadSuccess = false;
+            return Page();
+        }
 
+        await ValidateAndSaveEk16Async();
+        if (!IsUploadSuccess)
+            return Page();
+
+        // sunucuya kaydetme işlemleri
+        StudentRecord.Id = 0;
+        StudentRecord.StudentId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        StudentRecord.DocumentPath = _savedFileName;
+        StudentRecord.Status = BelgeDurumu.Yuklendi;
+        StudentRecord.CreatedAt = DateTime.Now;
+
+        _context.StudentRecords.Add(StudentRecord);
+        await _context.SaveChangesAsync();
+
+        UploadMessage += " Başvurunuz kaydedildi.";
         return Page();
     }
     private async Task ValidateAndSaveEk16Async()
@@ -123,7 +156,9 @@ public class StudentRecordModel : PageModel
             {
                 await UploadedFile.CopyToAsync(fileStream);
             }
-            
+
+            _savedFileName = safeFileName;
+
             // PDF veya DOCX dosyasındaki metni okur ve öğrenci alanlarını çıkarır.
             if (extension == ".pdf" || extension == ".docx")
             {

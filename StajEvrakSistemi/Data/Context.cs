@@ -19,10 +19,14 @@ namespace StajEvrakSistemi.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<StudentRecord>()
-                .HasOne(r => r.Student)
+                .HasOne(r => r.Student) // kayıtlar sadece bir öğrenciye ait olabilir
                 .WithMany(s => s.Records)
                 .HasForeignKey(r => r.StudentId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Cascade); // öğrenci silinirse kayıtları da silinir
+
+            modelBuilder.Entity<StudentRecord>()
+                .Property(r => r.Status) 
+                .HasConversion<string>(); // dosya durumu string olarak kaydedilsin
 
             modelBuilder.Entity<CSVRecord>()
                 .HasIndex(d => d.StudentNumber)
