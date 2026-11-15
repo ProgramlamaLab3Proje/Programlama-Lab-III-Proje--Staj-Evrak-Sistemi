@@ -1,6 +1,6 @@
 ﻿namespace StajEvrakSistemi.Models
 {
-    public class StudentInformations
+    public abstract class StudentInformations
     {
         public string Name { get; set; } = "";
         public string Surname { get; set; } = "";
