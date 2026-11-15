@@ -47,6 +47,7 @@
                         <th>Öğrenci Numarası</th>
                         <th>Belge Adı</th>
                         <th>Başvuru Durumu</th>
+                        <th>Belge İşlemi</th>
                     </tr>
                 </thead>
 
@@ -108,6 +109,22 @@
                                     case StajEvrakSistemi.Models.BelgeDurumu.Tamamlandi:
                                         <span class="badge bg-success">Tamamlandı</span>
                                         break;
+                                }
+                            </td>
+
+                            @* Öğrencinin yalnızca kendi belgesini görüntüleyebilmesi için bağlantı oluşturulur. *@
+                            <td>
+                                @if (!string.IsNullOrEmpty(application.DocumentPath))
+                                {
+                                    <a asp-page-handler="Document"
+                                       asp-route-id="@application.Id"
+                                       class="btn btn-outline-primary btn-sm">
+                                        Belgeyi Görüntüle
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span>Belge mevcut değil</span>
                                 }
                             </td>
 
