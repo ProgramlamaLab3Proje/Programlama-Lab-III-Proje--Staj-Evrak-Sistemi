@@ -45,8 +45,7 @@
                     <div class="col-md-6">
                         <label class="form-label fw-bold">Doğum Tarihi</label>
                         <input type="text" id="birth_date" class="form-control student-required" name="StudentRecord.BirthDate"
-                               value="@(Model.StudentRecord.BirthDate == DateTime.MinValue ? "" : Model.StudentRecord.BirthDate.ToString("dd.MM.yyyy"))"
-                               placeholder="gg.aa.yyyy" maxlength="10" autocomplete="off" />
+                               value="" placeholder="gg.aa.yyyy" maxlength="10" autocomplete="off" />
                     </div>
 
                     <!-- Bölüm ve Staj Gün Sayısı -->
@@ -56,8 +55,8 @@
                     </div>
                     <div class="col-md-6">
                         <label class="form-label fw-bold">Daha Önce Yapılan Staj Gün Sayısı</label>
-                        <input type="text" class="form-control digits-only" asp-for="StudentRecord.PreviousInternshipDays"
-                               inputmode="numeric" />
+                        <<input type="text" class="form-control digits-only" asp-for="StudentRecord.PreviousInternshipDays"
+                                    inputmode="numeric" />
                     </div>
 
                     <!-- E-posta ve Telefon -->
@@ -83,44 +82,44 @@
 
                     <!-- İkametgah adresi -->
                     <div class="col-12 mt-4">
-                        <div class="p-3 bg-light border rounded-3">
-                            <h6 class="fw-bold text-primary border-bottom border-primary-subtle pb-2 mb-3">İkametgâh Adresi</h6>
-                            <div class="row g-3">
-                                <div class="col-md-4">
-                                    <label class="form-label">Mahalle</label>
-                                    <input type="text" id="addr_mahalle" class="form-control student-required" />
-                                </div>
-                                <div class="col-md-5">
-                                    <label class="form-label">Cadde / Sokak</label>
-                                    <input type="text" id="addr_cadde_sokak" class="form-control student-required" />
-                                </div>
-                                <div class="col-md-3">
-                                    <label class="form-label">Bina No</label>
-                                    <input type="text" id="addr_bina" class="form-control student-required digits-only" inputmode="numeric" />
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-label">Daire No</label>
-                                    <input type="text" id="addr_daire" class="form-control student-required digits-only" inputmode="numeric" />
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-label">İlçe</label>
-                                    <input type="text" id="addr_ilce" class="form-control student-required" />
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-label">İl</label>
-                                    <input type="text" id="addr_il" class="form-control student-required" />
-                                </div>
+                       <div class="p-3 bg-light border rounded-3">
+                          <h6 class="fw-bold text-primary border-bottom border-primary-subtle pb-2 mb-3">İkametgâh Adresi</h6>
+                          <div class="row g-3">
+                             <div class="col-md-4">
+                                <label class="form-label">Mahalle</label>
+                                <input type="text" id="addr_mahalle" class="form-control student-required" />
+                             </div>
+                          <div class="col-md-5">
+                                <label class="form-label">Cadde / Sokak</label>
+                                <input type="text" id="addr_cadde_sokak" class="form-control student-required" />
+                          </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Bina No</label>
+                                        <input type="text" id="addr_bina" class="form-control student-required digits-only" inputmode="numeric" />
+                                    </div>
+                          <div class="col-md-4">
+                                <label class="form-label">Daire No</label>
+                                        <input type="text" id="addr_daire" class="form-control student-required digits-only" inputmode="numeric" />
+                                    </div>
+                          <div class="col-md-4">
+                                <label class="form-label">İlçe</label>
+                                <input type="text" id="addr_ilce" class="form-control student-required" />
+                          </div>
+                          <div class="col-md-4">
+                                <label class="form-label">İl</label>
+                                <input type="text" id="addr_il" class="form-control student-required" />
+                          </div>
 
-                                <input type="hidden" asp-for="StudentRecord.Address" id="hidden_full_address" />
-                            </div>
-                        </div>
+                    <input type="hidden" asp-for="StudentRecord.Address" id="hidden_full_address" />
                     </div>
                 </div>
             </div>
-        </div>
+        </div> 
+    </div>      
+</div>          
 
         <!-- Takvim / Belge (sol), Doğrulama özeti (sağ) -->
-        <div class="row" id="calculation_section" data-scroll="@(Model.CalculationResult != null ? "true" : "false")">
+            <div class="row" id="calculation_section" data-scroll="@(Model.CalculationResult != null ? "true" : "false")">
             <!-- Sol taraf: Staj takvim ve belge yükleme formu -->
             <div class="col-lg-7">
                 <div class="card shadow-sm mb-4">
@@ -184,9 +183,9 @@
                         <!-- Evrak yükleme alanı -->
                         <div class="mb-3">
                             <label for="UploadedFile" class="form-label fw-bold">Ek-16 Staj Belgesi Yükle</label>
-                            <input type="file" class="form-control student-required" id="UploadedFile" asp-for="UploadedFile" accept=".doc,.docx,.pdf,.jpg,.jpeg,.png" />
+                            <input type="file" class="form-control student-required" id="UploadedFile" asp-for="UploadedFile" accept=".doc,.docx,.pdf,.jpg,.jpeg,.png" /> 
                             <small class="text-muted d-block mt-1">Kabul edilen formatlar: Word (.doc/.docx), PDF, JPEG, PNG</small>
-
+                            
                             <!-- Belge seçildiği anda otomatik çalışan denetim mesajı -->
                             <div id="clientMessage" class="alert mt-2 py-2 mb-0" style="display:none;"></div>
 
@@ -224,7 +223,7 @@
                         <h5 class="mb-0 text-primary">Doğrulama &amp; Gün Hesabı Özeti</h5>
                     </div>
                     <div class="card-body">
-
+                    
                         @if (Model.CalculationResult != null)
                         {
                             <!-- Hesaplama yapıldıysa gösterilecek alan -->
@@ -354,5 +353,5 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr@@4.6.13/dist/flatpickr.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr@@4.6.13/dist/l10n/tr.js"></script>
 
-    <script src="studentRecord.cshtml.js" asp-append-version="true"></script>
+    <script src="studentRecord.js" asp-append-version="true"></script>
 }
